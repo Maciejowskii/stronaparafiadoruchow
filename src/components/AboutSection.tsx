@@ -70,16 +70,24 @@ export default function AboutSection() {
 
             <div
               style={{
-                minHeight: "460px",
-                overflow: "hidden",
+                width: "100%",
+                height: "440px",
                 borderRadius: "var(--radius-large)",
-                boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+                overflow: "hidden",
+                boxShadow: "0 12px 32px rgba(0,0,0,0.12)",
+                border: "1px solid var(--mist)",
               }}
             >
               <img
                 src="/zdjecia/wewnatrz.jpg"
                 alt="Wnętrze kościoła parafialnego w Doruchowie"
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  objectPosition: "center 35%",
+                  display: "block",
+                }}
               />
             </div>
           </div>

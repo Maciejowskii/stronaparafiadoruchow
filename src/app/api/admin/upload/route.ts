@@ -3,10 +3,20 @@ import { checkIsAdmin } from "@/lib/auth";
 import fs from "fs/promises";
 import path from "path";
 import sharp from "sharp";
-import { put, del } from "@vercel/blob";
+import { put, del, list } from "@vercel/blob";
 
 export async function GET() {
   try {
+    let blobFiles: string[] = [];
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      try {
+        const { blobs } = await list({ prefix: "zdjecia/" });
+        blobFiles = blobs.map((b) => b.url);
+      } catch (err) {
+        console.error("Failed to list Vercel Blob files:", err);
+      }
+    }
+
     const dirPath = path.join(process.cwd(), "public", "zdjecia");
     let localFiles: string[] = [];
     try {
@@ -16,7 +26,9 @@ export async function GET() {
         .map((file) => `/zdjecia/${file}`);
     } catch {}
 
-    return NextResponse.json({ images: localFiles });
+    const allImages = Array.from(new Set([...blobFiles, ...localFiles]));
+
+    return NextResponse.json({ images: allImages });
   } catch (err) {
     console.error("Failed to read zdjecia dir:", err);
     return NextResponse.json({ images: [] });

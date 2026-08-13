@@ -118,8 +118,26 @@ export default function AdminDashboardClient({
   // State for Photos Gallery Pagination (Max 30 photos per page)
   const [photosPage, setPhotosPage] = useState(1);
   const photosPerPage = 30;
-  const totalPhotosPages = Math.ceil(photosList.length / photosPerPage);
+  const totalPhotosPages = Math.ceil(photosList.length / photosPerPage) || 1;
   const paginatedPhotos = photosList.slice((photosPage - 1) * photosPerPage, photosPage * photosPerPage);
+
+  // Pagination for Announcements (3 per page)
+  const [announcementsPage, setAnnouncementsPage] = useState(1);
+  const announcementsPerPage = 3;
+  const totalAnnouncementsPages = Math.ceil(announcementsList.length / announcementsPerPage) || 1;
+  const paginatedAnnouncements = announcementsList.slice(
+    (announcementsPage - 1) * announcementsPerPage,
+    announcementsPage * announcementsPerPage
+  );
+
+  // Pagination for Blog Posts (6 per page)
+  const [blogPage, setBlogPage] = useState(1);
+  const blogPerPage = 6;
+  const totalBlogPages = Math.ceil(blogList.length / blogPerPage) || 1;
+  const paginatedBlogList = blogList.slice(
+    (blogPage - 1) * blogPerPage,
+    blogPage * blogPerPage
+  );
 
   // Flash message notification helper
   const notify = (msg: string) => {
@@ -560,9 +578,34 @@ export default function AdminDashboardClient({
             </div>
 
             <div>
-              <h3 style={{ marginBottom: "20px" }}>Opublikowane ogłoszenia</h3>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "12px" }}>
+                <h3 style={{ margin: 0 }}>Opublikowane ogłoszenia ({announcementsList.length})</h3>
+                {totalAnnouncementsPages > 1 && (
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <span style={{ fontSize: "13px", color: "var(--ash)" }}>
+                      Strona {announcementsPage} z {totalAnnouncementsPages}
+                    </span>
+                    <button
+                      onClick={() => setAnnouncementsPage((p) => Math.max(p - 1, 1))}
+                      disabled={announcementsPage === 1}
+                      className="btn"
+                      style={{ padding: "4px 10px", fontSize: "12px", opacity: announcementsPage === 1 ? 0.5 : 1 }}
+                    >
+                      ←
+                    </button>
+                    <button
+                      onClick={() => setAnnouncementsPage((p) => Math.min(p + 1, totalAnnouncementsPages))}
+                      disabled={announcementsPage === totalAnnouncementsPages}
+                      className="btn"
+                      style={{ padding: "4px 10px", fontSize: "12px", opacity: announcementsPage === totalAnnouncementsPages ? 0.5 : 1 }}
+                    >
+                      →
+                    </button>
+                  </div>
+                )}
+              </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                {announcementsList.map((ann) => (
+                {paginatedAnnouncements.map((ann) => (
                   <div
                     key={ann.id}
                     className="card"
@@ -621,6 +664,30 @@ export default function AdminDashboardClient({
                   </div>
                 ))}
               </div>
+
+              {totalAnnouncementsPages > 1 && (
+                <div style={{ display: "flex", justifyContent: "center", gap: "6px", marginTop: "20px" }}>
+                  {Array.from({ length: totalAnnouncementsPages }, (_, i) => i + 1).map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => setAnnouncementsPage(page)}
+                      style={{
+                        width: "32px",
+                        height: "32px",
+                        borderRadius: "6px",
+                        border: "1px solid var(--mist)",
+                        background: announcementsPage === page ? "var(--twilight)" : "var(--paper)",
+                        color: announcementsPage === page ? "#fff" : "var(--charcoal)",
+                        fontWeight: 600,
+                        fontSize: "13px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -829,9 +896,34 @@ export default function AdminDashboardClient({
             </div>
 
             <div>
-              <h3 style={{ marginBottom: "20px" }}>Opublikowane wydarzenia</h3>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "12px" }}>
+                <h3 style={{ margin: 0 }}>Opublikowane wydarzenia ({blogList.length})</h3>
+                {totalBlogPages > 1 && (
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <span style={{ fontSize: "13px", color: "var(--ash)" }}>
+                      Strona {blogPage} z {totalBlogPages}
+                    </span>
+                    <button
+                      onClick={() => setBlogPage((p) => Math.max(p - 1, 1))}
+                      disabled={blogPage === 1}
+                      className="btn"
+                      style={{ padding: "4px 10px", fontSize: "12px", opacity: blogPage === 1 ? 0.5 : 1 }}
+                    >
+                      ←
+                    </button>
+                    <button
+                      onClick={() => setBlogPage((p) => Math.min(p + 1, totalBlogPages))}
+                      disabled={blogPage === totalBlogPages}
+                      className="btn"
+                      style={{ padding: "4px 10px", fontSize: "12px", opacity: blogPage === totalBlogPages ? 0.5 : 1 }}
+                    >
+                      →
+                    </button>
+                  </div>
+                )}
+              </div>
               <div className="admin-grid-cards">
-                {blogList.map((post) => (
+                {paginatedBlogList.map((post) => (
                   <div
                     key={post.id}
                     className="card"
@@ -882,6 +974,30 @@ export default function AdminDashboardClient({
                   </div>
                 ))}
               </div>
+
+              {totalBlogPages > 1 && (
+                <div style={{ display: "flex", justifyContent: "center", gap: "6px", marginTop: "20px" }}>
+                  {Array.from({ length: totalBlogPages }, (_, i) => i + 1).map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => setBlogPage(page)}
+                      style={{
+                        width: "32px",
+                        height: "32px",
+                        borderRadius: "6px",
+                        border: "1px solid var(--mist)",
+                        background: blogPage === page ? "var(--twilight)" : "var(--paper)",
+                        color: blogPage === page ? "#fff" : "var(--charcoal)",
+                        fontWeight: 600,
+                        fontSize: "13px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}

@@ -17,7 +17,7 @@ export default function Announcements({ announcements, limit, showMoreBtn, enabl
   const [selected, setSelected] = useState<Announcement | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const pageSize = 12;
+  const pageSize = 3;
   const totalPages = enablePagination ? Math.ceil(announcements.length / pageSize) : 1;
 
   const displayedList = limit

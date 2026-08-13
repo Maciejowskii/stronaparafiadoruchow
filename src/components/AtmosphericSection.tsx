@@ -14,8 +14,8 @@ export default function AtmosphericSection() {
               overflow: "hidden",
               borderRadius: "var(--radius-large)",
               background: `
-                linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.65)),
-                url("/zdjecia/zzewnaatrz6.jpg") center / cover no-repeat
+                linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.7)),
+                url("/zdjecia/zzewnatrz3.jpg") center / cover no-repeat
               `,
               display: "flex",
               alignItems: "flex-end",

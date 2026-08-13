@@ -16,7 +16,7 @@ interface Props {
 export default function BlogGrid({ posts, limit, showMoreBtn, enablePagination }: Props) {
   const [currentPage, setCurrentPage] = useState(1);
 
-  const pageSize = 12;
+  const pageSize = 6;
   const totalPages = enablePagination ? Math.ceil(posts.length / pageSize) : 1;
 
   const displayedPosts = limit
