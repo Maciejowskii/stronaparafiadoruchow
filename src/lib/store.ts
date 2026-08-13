@@ -30,10 +30,10 @@ const defaultSeedData: StorageData = {
       period: "15 - 30 sierpnia 2026",
     },
     priest_info: {
-      name: "Ks. Paweł Kowalski",
+      name: "Ks. Ireneusz Powaga",
       title: "Proboszcz parafii",
       bio: "Duszpasterz naszej wspólnoty parafialnej w Doruchowie. Dba o rozwój duchowy parafian, opiekuje się zabytkowym kościołem oraz prowadzi duszpasterstwo dzieci, młodzieży i rodzin.",
-      image: "/zdjecia/oltarzboczny.jpg",
+      image: "/zdjecia/zzewnatrz5.jpg",
     },
     contact_info: {
       phone: "+48 62 730 11 22",

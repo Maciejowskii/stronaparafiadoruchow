@@ -75,10 +75,10 @@ async function main() {
     {
       key: "priest_info",
       value: JSON.stringify({
-        name: "Ks. Paweł Kowalski",
+        name: "Ks. Ireneusz Powaga",
         title: "Proboszcz parafii",
         bio: "Duszpasterz naszej wspólnoty parafialnej w Doruchowie. Dba o rozwój duchowy parafian, opiekuje się zabytkowym kościołem oraz prowadzi duszpasterstwo dzieci, młodzieży i rodzin.",
-        image: "/zdjecia/oltarzboczny.jpg"
+        image: "/zdjecia/zzewnatrz5.jpg"
       }),
     },
     {

@@ -1297,23 +1297,10 @@ export default function AdminDashboardClient({
                   onChange={(e) => setPriestInfo({ ...priestInfo, bio: e.target.value })}
                 />
               </div>
-              <div className="field">
-                <label htmlFor="pr-img">Zdjęcie proboszcza</label>
-                <select
-                  id="pr-img"
-                  value={priestInfo.image}
-                  onChange={(e) => setPriestInfo({ ...priestInfo, image: e.target.value })}
-                >
-                  {photosList.map((p) => (
-                    <option key={p} value={p}>
-                      {p}
-                    </option>
-                  ))}
-                </select>
-              </div>
               <button
                 onClick={() => saveSettings({ priest_info: priestInfo }, "Zapisano dane proboszcza")}
                 className="btn btn-dark"
+                style={{ marginTop: "12px" }}
               >
                 Zapisz dane proboszcza
               </button>

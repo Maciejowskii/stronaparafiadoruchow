@@ -9,10 +9,10 @@ interface Props {
 
 export default function PriestSection({ priest }: Props) {
   const info: PriestInfo = priest || {
-    name: "Ks. Paweł Kowalski",
+    name: "Ks. Ireneusz Powaga",
     title: "Proboszcz parafii",
-    bio: "Duszpasterz naszej wspólnoty parafialnej w Doruchowie od 2020 roku. Dba o duchowy rozwój parafian, opiekę nad zabytkowym kościołem oraz duszpasterstwo rodzin, dzieci i młodzieży.",
-    image: "/zdjecia/oltarzboczny.jpg",
+    bio: "Duszpasterz naszej wspólnoty parafialnej w Doruchowie. Dba o rozwój duchowy parafian, opiekuje się zabytkowym kościołem oraz prowadzi duszpasterstwo dzieci, młodzieży i rodzin.",
+    image: "/zdjecia/zzewnatrz5.jpg",
   };
 
   return (
@@ -44,7 +44,7 @@ export default function PriestSection({ priest }: Props) {
               }}
             >
               <img
-                src={info.image}
+                src="/zdjecia/zzewnatrz5.jpg"
                 alt={info.name}
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
@@ -74,7 +74,7 @@ export default function PriestSection({ priest }: Props) {
               >
                 {info.bio}
               </p>
-              <a href="#kontakt" className="text-link">
+              <a href="#kancelaria" className="text-link">
                 Kontakt z ks. Proboszczem →
               </a>
             </div>
