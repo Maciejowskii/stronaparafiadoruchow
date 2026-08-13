@@ -3,6 +3,7 @@ import { checkIsAdmin } from "@/lib/auth";
 import { getStoreData, saveStoreData } from "@/lib/store";
 import { db } from "@/db";
 import { announcements } from "@/db/schema";
+import { revalidatePath } from "next/cache";
 
 export async function GET() {
   const store = await getStoreData();
@@ -40,6 +41,7 @@ export async function POST(req: Request) {
     } catch {}
 
     await saveStoreData(store);
+    revalidatePath("/", "layout");
 
     return NextResponse.json(newAnnouncement);
   } catch (err) {

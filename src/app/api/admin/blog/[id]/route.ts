@@ -4,6 +4,7 @@ import { getStoreData, saveStoreData } from "@/lib/store";
 import { db } from "@/db";
 import { blogPosts } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
   if (!checkIsAdmin()) {
@@ -49,6 +50,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     } catch {}
 
     await saveStoreData(store);
+    revalidatePath("/", "layout");
     return NextResponse.json(store.blogPosts[idx] || { id });
   } catch (err) {
     console.error("Failed update blog post:", err);
@@ -73,6 +75,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     } catch {}
 
     await saveStoreData(store);
+    revalidatePath("/", "layout");
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("Failed delete blog post:", err);

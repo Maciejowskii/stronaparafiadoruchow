@@ -3,6 +3,7 @@ import { checkIsAdmin } from "@/lib/auth";
 import { getStoreData, saveStoreData } from "@/lib/store";
 import { db } from "@/db";
 import { siteSettings } from "@/db/schema";
+import { revalidatePath } from "next/cache";
 
 export async function GET() {
   const store = await getStoreData();
@@ -39,6 +40,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Błąd podczas zapisu ustawień" }, { status: 500 });
     }
 
+    revalidatePath("/", "layout");
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("Failed to update settings:", err);

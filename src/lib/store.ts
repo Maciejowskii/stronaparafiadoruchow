@@ -78,10 +78,17 @@ export async function getStoreData(): Promise<StorageData> {
     try {
       const blobs = await list({ prefix: BLOB_DB_FILENAME, token });
       if (blobs.blobs.length > 0) {
-        const latestBlob = blobs.blobs[0];
+        // Sort by uploadedAt descending to get latest version
+        const sortedBlobs = blobs.blobs.sort(
+          (a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()
+        );
+        const latestBlob = sortedBlobs[0];
         const targetUrl = (latestBlob as any).downloadUrl || latestBlob.url;
+        const cacheBustUrl = targetUrl.includes("?")
+          ? `${targetUrl}&t=${Date.now()}`
+          : `${targetUrl}?t=${Date.now()}`;
 
-        const res = await fetch(targetUrl, {
+        const res = await fetch(cacheBustUrl, {
           cache: "no-store",
           headers: {
             Authorization: `Bearer ${token}`,
