@@ -185,9 +185,9 @@ export async function getStoreData(): Promise<StorageData> {
   }
 }
 
-// Save store data to Blob (if Vercel) or SQLite (if local)
 export async function saveStoreData(data: StorageData): Promise<boolean> {
   const hasBlob = Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+  let blobSuccess = false;
 
   if (hasBlob) {
     try {
@@ -196,17 +196,16 @@ export async function saveStoreData(data: StorageData): Promise<boolean> {
         access: "public",
         contentType: "application/json",
         addRandomSuffix: false,
+        allowOverwrite: true,
       });
-      return true;
+      blobSuccess = true;
     } catch (err) {
       console.error("Failed to save store data to Vercel Blob:", err);
-      return false;
     }
   }
 
-  // SQLite fallback
+  // SQLite fallback save
   try {
-    // Save settings
     for (const [key, val] of Object.entries(data.siteSettings)) {
       const stringVal = typeof val === "string" ? val : JSON.stringify(val);
       await db
@@ -219,7 +218,10 @@ export async function saveStoreData(data: StorageData): Promise<boolean> {
     }
     return true;
   } catch (err) {
-    console.error("Failed to save to SQLite:", err);
+    // If running on Vercel where filesystem/SQLite is read-only, return blobSuccess status
+    if (hasBlob && blobSuccess) {
+      return true;
+    }
     return false;
   }
 }
