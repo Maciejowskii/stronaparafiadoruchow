@@ -1,8 +1,6 @@
 import { checkIsAdmin } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { db } from "@/db";
-import { announcements, blogPosts, siteSettings } from "@/db/schema";
-import { desc } from "drizzle-orm";
+import { getStoreData } from "@/lib/store";
 import fs from "fs/promises";
 import path from "path";
 import AdminDashboardClient from "./AdminDashboardClient";
@@ -13,21 +11,9 @@ export default async function AdminPage() {
     redirect("/admin/login");
   }
 
-  // Load data server-side
-  const announcementsList = await db.select().from(announcements).orderBy(desc(announcements.createdAt));
-  const blogPostsList = await db.select().from(blogPosts).orderBy(desc(blogPosts.createdAt));
-  const settingsRows = await db.select().from(siteSettings);
+  const store = await getStoreData();
 
-  const settingsMap: Record<string, any> = {};
-  for (const row of settingsRows) {
-    try {
-      settingsMap[row.key] = JSON.parse(row.value);
-    } catch {
-      settingsMap[row.key] = row.value;
-    }
-  }
-
-  // Load available photos
+  // Load available local photos
   let photos: string[] = [];
   try {
     const dirPath = path.join(process.cwd(), "public", "zdjecia");
@@ -41,9 +27,9 @@ export default async function AdminPage() {
 
   return (
     <AdminDashboardClient
-      initialAnnouncements={announcementsList}
-      initialBlogPosts={blogPostsList}
-      initialSettings={settingsMap}
+      initialAnnouncements={store.announcements}
+      initialBlogPosts={store.blogPosts}
+      initialSettings={store.siteSettings}
       initialPhotos={photos}
     />
   );

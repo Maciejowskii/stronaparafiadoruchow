@@ -1,6 +1,3 @@
-import { db } from "@/db";
-import { announcements, blogPosts, siteSettings } from "@/db/schema";
-import { desc, eq } from "drizzle-orm";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import QuickInfo from "@/components/QuickInfo";
@@ -14,33 +11,16 @@ import MediaSection from "@/components/MediaSection";
 import OfficeSection from "@/components/OfficeSection";
 import Footer from "@/components/Footer";
 import OfficeAlertBanner from "@/components/OfficeAlertBanner";
+import { getStoreData } from "@/lib/store";
 
 export const revalidate = 0; // ISR / Server render fresh settings
 
 export default async function HomePage() {
-  // Fetch data
-  const publishedAnnouncements = await db
-    .select()
-    .from(announcements)
-    .where(eq(announcements.isPublished, 1))
-    .orderBy(desc(announcements.createdAt));
+  const store = await getStoreData();
 
-  const publishedBlogPosts = await db
-    .select()
-    .from(blogPosts)
-    .where(eq(blogPosts.isPublished, 1))
-    .orderBy(desc(blogPosts.createdAt));
-
-  const settingsRows = await db.select().from(siteSettings);
-  const settings: Record<string, any> = {};
-
-  for (const row of settingsRows) {
-    try {
-      settings[row.key] = JSON.parse(row.value);
-    } catch {
-      settings[row.key] = row.value;
-    }
-  }
+  const publishedAnnouncements = store.announcements.filter((a) => Boolean(a.isPublished));
+  const publishedBlogPosts = store.blogPosts.filter((p) => Boolean(p.isPublished));
+  const settings = store.siteSettings;
 
   return (
     <>

@@ -1,35 +1,32 @@
-import { db } from "@/db";
-import { blogPosts } from "@/db/schema";
-import { desc, eq } from "drizzle-orm";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import BlogGrid from "@/components/BlogGrid";
 import Link from "next/link";
-
-export const metadata = {
-  title: "Wydarzenia i Blog | Parafia Doruchów",
-  description: "Relacje, zdjęcia i wspomnienia z życia wspólnoty parafialnej w Doruchowie.",
-};
+import { getStoreData } from "@/lib/store";
 
 export const revalidate = 0;
 
+export const metadata = {
+  title: "Wydarzenia i Aktualności | Parafia Doruchów",
+  description: "Aktualności i kronika wydarzeń z życia parafii św. Stanisława Kostki w Doruchowie.",
+};
+
 export default async function BlogPage() {
-  const allBlogPosts = await db
-    .select()
-    .from(blogPosts)
-    .where(eq(blogPosts.isPublished, 1))
-    .orderBy(desc(blogPosts.createdAt));
+  const store = await getStoreData();
+  const publishedBlogPosts = store.blogPosts.filter((p) => Boolean(p.isPublished));
 
   return (
     <>
       <Navigation />
-      <main style={{ minHeight: "100vh", paddingTop: "120px" }}>
-        <div className="container" style={{ marginBottom: "16px" }}>
-          <Link href="/" className="text-link">
-            ← Strona główna
-          </Link>
+      <main style={{ minHeight: "100vh", paddingTop: "120px", paddingBottom: "80px" }}>
+        <div className="container">
+          <div style={{ marginBottom: "32px" }}>
+            <Link href="/" style={{ color: "var(--ash)", fontSize: "14px", marginBottom: "12px", display: "inline-block" }}>
+              ← Powrót do strony głównej
+            </Link>
+          </div>
+          <BlogGrid posts={publishedBlogPosts} enablePagination={true} />
         </div>
-        <BlogGrid posts={allBlogPosts} enablePagination={true} />
       </main>
       <Footer />
     </>

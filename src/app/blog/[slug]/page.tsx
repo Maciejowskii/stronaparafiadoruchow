@@ -1,69 +1,74 @@
-import { db } from "@/db";
-import { blogPosts } from "@/db/schema";
-import { eq } from "drizzle-orm";
-import { notFound } from "next/navigation";
-import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import { notFound } from "next/navigation";
+import Link from "next/link";
 import BlogPostGallery from "@/components/BlogPostGallery";
+import { getStoreData } from "@/lib/store";
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const posts = await db.select().from(blogPosts).where(eq(blogPosts.slug, params.slug));
-  if (!posts.length) return { title: "Nie znaleziono artykułu" };
+export const revalidate = 0;
+
+interface Props {
+  params: { slug: string };
+}
+
+export async function generateMetadata({ params }: Props) {
+  const store = await getStoreData();
+  const post = store.blogPosts.find((p) => p.slug === params.slug);
+
+  if (!post) {
+    return { title: "Wpis nie znaleziony | Parafia Doruchów" };
+  }
+
   return {
-    title: `${posts[0].title} | Parafia Doruchów`,
-    description: posts[0].excerpt,
+    title: `${post.title} | Parafia Doruchów`,
+    description: post.excerpt,
   };
 }
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const posts = await db.select().from(blogPosts).where(eq(blogPosts.slug, params.slug));
+export default async function BlogPostPage({ params }: Props) {
+  const store = await getStoreData();
+  const post = store.blogPosts.find((p) => p.slug === params.slug);
 
-  if (!posts.length) {
+  if (!post || !post.isPublished) {
     notFound();
   }
 
-  const post = posts[0];
   let gallery: string[] = [];
   try {
     gallery = JSON.parse(post.galleryImages || "[]");
-  } catch {}
+  } catch {
+    gallery = [];
+  }
 
   return (
     <>
       <Navigation />
-      <article style={{ minHeight: "100vh", paddingTop: "120px", paddingBottom: "88px" }}>
-        <div className="container" style={{ maxWidth: "860px" }}>
+      <main style={{ minHeight: "100vh", paddingTop: "120px", paddingBottom: "88px" }}>
+        <article className="container" style={{ maxWidth: "800px" }}>
           <Link
             href="/blog"
-            className="text-link"
-            style={{ marginBottom: "24px", display: "inline-flex" }}
-          >
-            ← Powrót do wydarzeń
-          </Link>
-
-          <p className="eyebrow" style={{ marginTop: "12px", marginBottom: "8px" }}>
-            {post.date} · Wydarzenie w parafii
-          </p>
-
-          <h1
             style={{
-              fontSize: "clamp(36px, 5vw, 54px)",
-              lineHeight: 1.1,
+              display: "inline-block",
               marginBottom: "24px",
-              color: "var(--graphite)",
+              fontSize: "14px",
+              color: "var(--ash)",
             }}
           >
+            ← Powrót do artykułów
+          </Link>
+
+          <p className="eyebrow">{post.date}</p>
+          <h1 style={{ fontSize: "clamp(32px, 5vw, 48px)", margin: "0 0 24px", lineHeight: 1.15 }}>
             {post.title}
           </h1>
 
           <div
             style={{
-              height: "460px",
-              overflow: "hidden",
+              width: "100%",
+              height: "400px",
               borderRadius: "var(--radius-large)",
+              overflow: "hidden",
               marginBottom: "40px",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.12)",
             }}
           >
             <img
@@ -77,18 +82,17 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             style={{
               fontSize: "18px",
               lineHeight: 1.8,
-              color: "var(--charcoal)",
+              color: "var(--graphite)",
               whiteSpace: "pre-wrap",
-              marginBottom: "48px",
             }}
           >
             {post.content}
           </div>
 
-          {/* Paginated Lightbox Gallery */}
+          {/* GALLERY OF PHOTOS WITH PAGINATION */}
           <BlogPostGallery images={gallery} />
-        </div>
-      </article>
+        </article>
+      </main>
       <Footer />
     </>
   );

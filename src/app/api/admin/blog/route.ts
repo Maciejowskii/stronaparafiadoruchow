@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { checkIsAdmin } from "@/lib/auth";
+import { getStoreData, saveStoreData } from "@/lib/store";
 import { db } from "@/db";
 import { blogPosts } from "@/db/schema";
-import { desc } from "drizzle-orm";
 
 export async function GET() {
-  const items = await db.select().from(blogPosts).orderBy(desc(blogPosts.createdAt));
-  return NextResponse.json(items);
+  const store = await getStoreData();
+  return NextResponse.json(store.blogPosts);
 }
 
 export async function POST(req: Request) {
@@ -21,21 +21,31 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Wypełnij wymagane pola" }, { status: 400 });
     }
 
-    const inserted = await db.insert(blogPosts).values({
+    const store = await getStoreData();
+    const newId = Date.now();
+    const newPost = {
+      id: newId,
       title,
       slug,
       date: date || new Date().toLocaleDateString("pl-PL", { day: "numeric", month: "long", year: "numeric" }),
       excerpt: excerpt || title,
       content,
       coverImage,
-      galleryImages: Array.isArray(galleryImages) ? JSON.stringify(galleryImages) : "[]",
+      galleryImages: Array.isArray(galleryImages) ? JSON.stringify(galleryImages) : galleryImages || "[]",
       isPublished: isPublished ? 1 : 0,
       createdAt: Date.now(),
-    }).returning();
+    };
 
-    return NextResponse.json(inserted[0]);
+    store.blogPosts.unshift(newPost);
+
+    try {
+      await db.insert(blogPosts).values(newPost);
+    } catch {}
+
+    await saveStoreData(store);
+    return NextResponse.json(newPost);
   } catch (err) {
     console.error("Failed to create blog post:", err);
-    return NextResponse.json({ error: "Błąd bazy danych (slug musi być unikalny)" }, { status: 500 });
+    return NextResponse.json({ error: "Błąd podczas dodawania artykułu" }, { status: 500 });
   }
 }

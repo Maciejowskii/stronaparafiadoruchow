@@ -1,22 +1,12 @@
 import { NextResponse } from "next/server";
 import { checkIsAdmin } from "@/lib/auth";
+import { getStoreData, saveStoreData } from "@/lib/store";
 import { db } from "@/db";
 import { siteSettings } from "@/db/schema";
-import { eq } from "drizzle-orm";
 
 export async function GET() {
-  const rows = await db.select().from(siteSettings);
-  const settings: Record<string, any> = {};
-
-  for (const row of rows) {
-    try {
-      settings[row.key] = JSON.parse(row.value);
-    } catch {
-      settings[row.key] = row.value;
-    }
-  }
-
-  return NextResponse.json(settings);
+  const store = await getStoreData();
+  return NextResponse.json(store.siteSettings);
 }
 
 export async function POST(req: Request) {
@@ -25,18 +15,28 @@ export async function POST(req: Request) {
   }
 
   try {
-    const body = await req.json(); // { key: string, value: any }
+    const body = await req.json(); // { key: string, value: any } or object with key-values
+    const store = await getStoreData();
 
     for (const [key, val] of Object.entries(body)) {
-      const stringVal = typeof val === "string" ? val : JSON.stringify(val);
+      store.siteSettings[key] = val;
 
-      await db
-        .insert(siteSettings)
-        .values({ key, value: stringVal })
-        .onConflictDoUpdate({
-          target: siteSettings.key,
-          set: { value: stringVal },
-        });
+      // Also attempt SQLite save if available
+      try {
+        const stringVal = typeof val === "string" ? val : JSON.stringify(val);
+        await db
+          .insert(siteSettings)
+          .values({ key, value: stringVal })
+          .onConflictDoUpdate({
+            target: siteSettings.key,
+            set: { value: stringVal },
+          });
+      } catch {}
+    }
+
+    const saved = await saveStoreData(store);
+    if (!saved && process.env.BLOB_READ_WRITE_TOKEN) {
+      return NextResponse.json({ error: "Błąd podczas zapisu ustawień" }, { status: 500 });
     }
 
     return NextResponse.json({ success: true });

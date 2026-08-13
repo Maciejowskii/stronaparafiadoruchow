@@ -3,8 +3,7 @@ import Footer from "@/components/Footer";
 import Link from "next/link";
 import { Calendar, Church, MapPin, ShieldCheck, Clock, Bookmark } from "lucide-react";
 import MotionReveal from "@/components/MotionReveal";
-import { db } from "@/db";
-import { siteSettings } from "@/db/schema";
+import { getStoreData } from "@/lib/store";
 import { MassScheduleItem } from "@/lib/types";
 
 export const revalidate = 0;
@@ -15,14 +14,8 @@ export const metadata = {
 };
 
 export default async function BobrownikiPage() {
-  const settingsRows = await db.select().from(siteSettings);
-  let massSchedule: MassScheduleItem[] = [];
-  const massRow = settingsRows.find((r) => r.key === "mass_schedule");
-  if (massRow) {
-    try {
-      massSchedule = JSON.parse(massRow.value);
-    } catch {}
-  }
+  const store = await getStoreData();
+  const massSchedule: MassScheduleItem[] = store.siteSettings.mass_schedule || [];
 
   // Filter dynamic schedule items for Bobrowniki
   const bobrownikiItems = massSchedule.filter((item) =>

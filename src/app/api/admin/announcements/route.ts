@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { checkIsAdmin } from "@/lib/auth";
+import { getStoreData, saveStoreData } from "@/lib/store";
 import { db } from "@/db";
 import { announcements } from "@/db/schema";
-import { desc } from "drizzle-orm";
 
 export async function GET() {
-  const items = await db.select().from(announcements).orderBy(desc(announcements.createdAt));
-  return NextResponse.json(items);
+  const store = await getStoreData();
+  return NextResponse.json(store.announcements);
 }
 
 export async function POST(req: Request) {
@@ -21,15 +21,27 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Wypełnij wymagane pola" }, { status: 400 });
     }
 
-    const inserted = await db.insert(announcements).values({
+    const store = await getStoreData();
+    const newId = Date.now();
+    const newAnnouncement = {
+      id: newId,
       title,
       date,
       content,
       isPublished: isPublished ? 1 : 0,
       createdAt: Date.now(),
-    }).returning();
+    };
 
-    return NextResponse.json(inserted[0]);
+    store.announcements.unshift(newAnnouncement);
+
+    // Attempt SQLite insert if available
+    try {
+      await db.insert(announcements).values(newAnnouncement);
+    } catch {}
+
+    await saveStoreData(store);
+
+    return NextResponse.json(newAnnouncement);
   } catch (err) {
     console.error("Failed to create announcement:", err);
     return NextResponse.json({ error: "Błąd bazy danych" }, { status: 500 });
