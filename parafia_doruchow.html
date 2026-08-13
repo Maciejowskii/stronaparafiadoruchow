@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Parafia pw. św. Stanisława Kostki w Doruchowie">
+  <title>Parafia pw. św. Stanisława Kostki | Doruchów</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --parchment: #fefffc;
+      --paper: #ffffff;
+      --linen: #f9faf7;
+      --ink: #171717;
+      --graphite: #2c2c2c;
+      --charcoal: #444141;
+      --ash: #646464;
+      --fog: #b4b8b4;
+      --mist: #dee2de;
+      --twilight: #282834;
+      --dusk: #1f1f29;
+      --blue: #41a1cf;
+      --cerulean: #0081c0;
+
+      --serif: "Fraunces", Georgia, serif;
+      --sans: "Inter", Arial, sans-serif;
+
+      --max: 1200px;
+      --radius-card: 12px;
+      --radius-large: 24px;
+      --radius-button: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--parchment);
+      color: var(--charcoal);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.5;
+      letter-spacing: -0.01em;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      object-fit: cover;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    .container {
+      width: min(calc(100% - 40px), var(--max));
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--ash);
+      font-size: 13px;
+      line-height: 1.3;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+
+    .serif {
+      font-family: var(--serif);
+      font-weight: 400;
+      color: var(--graphite);
+      letter-spacing: -0.035em;
+    }
+
+    h1, h2, h3, p {
+      margin-top: 0;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-weight: 400;
+      letter-spacing: -0.04em;
+    }
+
+    h2 {
+      margin-bottom: 18px;
+      font-family: var(--serif);
+      font-size: clamp(36px, 5vw, 54px);
+      line-height: 1.1;
+      font-weight: 400;
+      letter-spacing: -0.035em;
+      color: var(--graphite);
+    }
+
+    h3 {
+      font-family: var(--serif);
+      font-size: 27px;
+      line-height: 1.2;
+      font-weight: 400;
+      letter-spacing: -0.035em;
+      color: var(--graphite);
+    }
+
+    .section {
+      padding: 88px 0;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .section-header p {
+      max-width: 440px;
+      margin-bottom: 4px;
+      color: var(--ash);
+    }
+
+    /* NAV */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      padding: 32px 0 48px;
+      background:
+        linear-gradient(180deg, rgba(20,25,27,.14) 0%, rgba(20,25,27,.02) 36%, rgba(20,25,27,.64) 100%),
+        url("images/kosciol-doruchow.jpg") center / cover no-repeat;
+    }
+
+    .nav {
+      position: absolute;
+      z-index: 10;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(calc(100% - 40px), 960px);
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      border: 1px solid rgba(255,255,255,.42);
+      border-radius: 50px;
+      background: rgba(30,30,35,.32);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      color: #fff;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-right: auto;
+      padding: 8px 12px;
+      font-size: 14px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,.7);
+      border-radius: 50%;
+      font-family: var(--serif);
+      font-size: 14px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .nav-links a {
+      padding: 9px 11px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 500;
+      transition: background .2s ease;
+    }
+
+    .nav-links a:hover {
+      background: rgba(255,255,255,.12);
+    }
+
+    .nav-cta {
+      padding: 8px 13px;
+      border: 1px solid var(--blue);
+      border-radius: var(--radius-button);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    /* HERO */
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      width: min(100%, 720px);
+    }
+
+    .hero-card {
+      padding: 34px;
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: var(--radius-large);
+      background: rgba(20,25,28,.28);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      color: #fff;
+    }
+
+    .hero-card .eyebrow {
+      color: rgba(255,255,255,.74);
+    }
+
+    .hero-card h1 {
+      max-width: 680px;
+      margin-bottom: 18px;
+      color: #fff;
+      font-size: clamp(46px, 7vw, 72px);
+      line-height: 1.02;
+    }
+
+    .hero-card p {
+      max-width: 520px;
+      margin-bottom: 26px;
+      color: rgba(255,255,255,.84);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 40px;
+      padding: 7px 13px;
+      border: 1px solid var(--twilight);
+      border-radius: var(--radius-button);
+      background: transparent;
+      color: var(--twilight);
+      font-size: 14px;
+      font-weight: 500;
+      transition: transform .2s ease, background .2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      background: rgba(40,40,52,.04);
+    }
+
+    .btn-primary {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .hero-card .btn-primary {
+      color: #fff;
+      border-color: var(--blue);
+      background: rgba(65,161,207,.08);
+    }
+
+    .btn-dark {
+      background: var(--dusk);
+      border-color: var(--twilight);
+      color: #fff;
+    }
+
+    .arrow {
+      display: grid;
+      place-items: center;
+      width: 22px;
+      height: 22px;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      line-height: 1;
+    }
+
+    /* QUICK INFO */
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .card {
+      border: 1px solid var(--mist);
+      border-radius: var(--radius-card);
+      background: var(--paper);
+      box-shadow: 0 1px 1px rgba(0,0,0,.08), 0 4px 5px rgba(0,0,0,.055);
+    }
+
+    .info-card {
+      min-height: 210px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-card .number {
+      margin-bottom: auto;
+      color: var(--fog);
+      font-size: 13px;
+    }
+
+    .info-card h3 {
+      margin: 26px 0 8px;
+    }
+
+    .info-card p {
+      margin-bottom: 20px;
+      color: var(--ash);
+      font-size: 14px;
+    }
+
+    .text-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      width: fit-content;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--twilight);
+    }
+
+    /* MASS */
+    .mass-section {
+      background: var(--paper);
+      border-top: 1px solid var(--mist);
+      border-bottom: 1px solid var(--mist);
+    }
+
+    .mass-layout {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .mass-intro p {
+      max-width: 460px;
+      color: var(--ash);
+    }
+
+    .mass-schedule {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      border-top: 1px solid var(--mist);
+    }
+
+    .schedule-row {
+      display: contents;
+    }
+
+    .schedule-label,
+    .schedule-times {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--mist);
+    }
+
+    .schedule-label {
+      color: var(--charcoal);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .schedule-times {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .time {
+      padding: 5px 9px;
+      border: 1px solid var(--mist);
+      border-radius: 8px;
+      background: var(--linen);
+      color: var(--graphite);
+      font-size: 14px;
+    }
+
+    /* ANNOUNCEMENTS */
+    .announcement-list {
+      border-top: 1px solid var(--mist);
+    }
+
+    .announcement {
+      display: grid;
+      grid-template-columns: 150px 1fr 100px;
+      gap: 30px;
+      align-items: center;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--mist);
+    }
+
+    .announcement-date {
+      color: var(--ash);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .announcement h3 {
+      margin: 0 0 5px;
+      font-size: 25px;
+    }
+
+    .announcement p {
+      margin: 0;
+      color: var(--ash);
+      font-size: 14px;
+    }
+
+    .announcement .text-link {
+      justify-self: end;
+    }
+
+    /* ATMOSPHERIC EVENT */
+    .atmospheric {
+      padding: 88px 0;
+    }
+
+    .atmospheric-card {
+      position: relative;
+      min-height: 620px;
+      overflow: hidden;
+      border-radius: var(--radius-large);
+      background: var(--cerulean);
+      background-image:
+        linear-gradient(180deg, rgba(0,0,0,.03), rgba(0,0,0,.36)),
+        url("images/wydarzenie-parafialne.jpg");
+      background-size: cover;
+      background-position: center;
+    }
+
+    .atmospheric-content {
+      position: absolute;
+      left: 32px;
+      bottom: 32px;
+      max-width: 570px;
+      padding: 32px;
+      border: 1px solid rgba(255,255,255,.28);
+      border-radius: var(--radius-large);
+      background: rgba(15,30,35,.28);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      color: #fff;
+    }
+
+    .atmospheric-content .eyebrow {
+      color: rgba(255,255,255,.72);
+    }
+
+    .atmospheric-content h2 {
+      margin-bottom: 14px;
+      color: #fff;
+    }
+
+    .atmospheric-content p {
+      color: rgba(255,255,255,.82);
+    }
+
+    .atmospheric-content .btn {
+      color: #fff;
+      border-color: rgba(255,255,255,.7);
+    }
+
+    /* BLOG */
+    .events-grid {
+      display: grid;
+      grid-template-columns: 1.4fr .8fr .8fr;
+      grid-template-rows: 250px 250px;
+      gap: 16px;
+    }
+
+    .event-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius-card);
+      background: var(--graphite);
+    }
+
+    .event-card.large {
+      grid-row: 1 / 3;
+    }
+
+    .event-card img {
+      height: 100%;
+      transition: transform .45s ease;
+    }
+
+    .event-card:hover img {
+      transform: scale(1.035);
+    }
+
+    .event-overlay {
+      position: absolute;
+      inset: auto 16px 16px 16px;
+      padding: 18px;
+      border-radius: 12px;
+      background: rgba(20,20,24,.56);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: #fff;
+    }
+
+    .event-overlay .eyebrow {
+      margin-bottom: 5px;
+      color: rgba(255,255,255,.68);
+    }
+
+    .event-overlay h3 {
+      margin: 0;
+      color: #fff;
+      font-size: 23px;
+    }
+
+    /* PRIEST */
+    .priest-section {
+      background: var(--paper);
+      border-top: 1px solid var(--mist);
+      border-bottom: 1px solid var(--mist);
+    }
+
+    .priest-layout {
+      display: grid;
+      grid-template-columns: .8fr 1.2fr;
+      gap: 70px;
+      align-items: center;
+    }
+
+    .priest-photo {
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+      border-radius: var(--radius-card);
+    }
+
+    .priest-copy p {
+      max-width: 590px;
+      color: var(--ash);
+    }
+
+    .priest-name {
+      margin: 0 0 18px;
+      font-family: var(--serif);
+      font-size: clamp(34px, 4vw, 48px);
+      line-height: 1.1;
+      font-weight: 400;
+      color: var(--graphite);
+      letter-spacing: -.035em;
+    }
+
+    /* ABOUT */
+    .about-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 70px;
+      align-items: center;
+    }
+
+    .about-photo {
+      min-height: 530px;
+      overflow: hidden;
+      border-radius: var(--radius-large);
+    }
+
+    .about-copy p {
+      max-width: 520px;
+      color: var(--ash);
+    }
+
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      margin-top: 30px;
+      border-top: 1px solid var(--mist);
+    }
+
+    .fact {
+      padding: 17px 0;
+      border-bottom: 1px solid var(--mist);
+    }
+
+    .fact:nth-child(odd) {
+      margin-right: 20px;
+    }
+
+    .fact-label {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--ash);
+      font-size: 12px;
+    }
+
+    .fact-value {
+      color: var(--graphite);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* OFFICE + CONTACT */
+    .contact-section {
+      background: var(--paper);
+      border-top: 1px solid var(--mist);
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: .75fr 1.25fr;
+      gap: 80px;
+    }
+
+    .office-block {
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--mist);
+    }
+
+    .office-block h3 {
+      margin: 0 0 22px;
+    }
+
+    .office-hours {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0 20px;
+      border-top: 1px solid var(--mist);
+    }
+
+    .office-hours div {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--mist);
+      font-size: 14px;
+    }
+
+    .office-hours div:nth-child(even) {
+      text-align: right;
+    }
+
+    .contact-details {
+      margin-top: 28px;
+    }
+
+    .contact-details p {
+      margin-bottom: 15px;
+      color: var(--ash);
+      font-size: 14px;
+    }
+
+    .contact-details strong {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--graphite);
+      font-weight: 500;
+    }
+
+    .form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px 20px;
+    }
+
+    .field {
+      position: relative;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--ash);
+      font-size: 12px;
+    }
+
+    .field input,
+    .field textarea {
+      width: 100%;
+      padding: 10px 0;
+      border: 0;
+      border-bottom: 1px solid var(--charcoal);
+      border-radius: 0;
+      outline: 0;
+      background: var(--linen);
+      color: var(--charcoal);
+    }
+
+    .field input:focus,
+    .field textarea:focus {
+      border-color: var(--blue);
+    }
+
+    .field textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    /* MAP */
+    .map {
+      min-height: 360px;
+      margin-top: 70px;
+      overflow: hidden;
+      border: 1px solid var(--mist);
+      border-radius: var(--radius-card);
+      background:
+        linear-gradient(rgba(249,250,247,.75), rgba(249,250,247,.75)),
+        url("images/mapa-placeholder.jpg") center / cover;
+      display: grid;
+      place-items: center;
+    }
+
+    .map-marker {
+      width: 210px;
+      padding: 17px;
+      border: 1px solid var(--mist);
+      border-radius: 12px;
+      background: rgba(255,255,255,.93);
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,.08);
+    }
+
+    .map-marker strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--graphite);
+      font-family: var(--serif);
+      font-size: 21px;
+      font-weight: 400;
+    }
+
+    .map-marker span {
+      color: var(--ash);
+      font-size: 12px;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 90px 0 30px;
+      background: var(--paper);
+      border-top: 1px solid var(--mist);
+    }
+
+    .footer-statement {
+      max-width: 850px;
+      margin-bottom: 70px;
+      font-family: var(--serif);
+      font-size: clamp(40px, 6vw, 68px);
+      line-height: 1.04;
+      letter-spacing: -.04em;
+      color: var(--graphite);
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      gap: 30px;
+      padding-top: 20px;
+      border-top: 1px solid var(--mist);
+      color: var(--ash);
+      font-size: 12px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    /* MOBILE */
+    @media (max-width: 900px) {
+      .nav {
+        width: calc(100% - 24px);
+      }
+
+      .brand span {
+        display: none;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .section {
+        padding: 68px 0;
+      }
+
+      .quick-grid,
+      .mass-layout,
+      .priest-layout,
+      .about-layout,
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .mass-layout,
+      .priest-layout,
+      .about-layout,
+      .contact-grid {
+        gap: 40px;
+      }
+
+      .events-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 300px 220px;
+      }
+
+      .event-card.large {
+        grid-column: 1 / -1;
+        grid-row: auto;
+      }
+
+      .announcement {
+        grid-template-columns: 100px 1fr;
+      }
+
+      .announcement .text-link {
+        display: none;
+      }
+
+      .map {
+        margin-top: 45px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        width: min(calc(100% - 28px), var(--max));
+      }
+
+      .hero {
+        min-height: 780px;
+        padding-bottom: 22px;
+      }
+
+      .hero-card {
+        padding: 24px;
+      }
+
+      .hero-card h1 {
+        font-size: 46px;
+      }
+
+      .quick-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-header {
+        display: block;
+      }
+
+      .section-header p {
+        margin-top: 15px;
+      }
+
+      .mass-schedule {
+        grid-template-columns: 1fr;
+      }
+
+      .schedule-label {
+        padding-bottom: 5px;
+        border-bottom: 0;
+      }
+
+      .schedule-times {
+        padding-top: 5px;
+      }
+
+      .announcement {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+
+      .events-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 330px 250px 250px;
+      }
+
+      .event-card.large {
+        grid-column: auto;
+      }
+
+      .atmospheric-card {
+        min-height: 550px;
+      }
+
+      .atmospheric-content {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        padding: 24px;
+      }
+
+      .form {
+        grid-template-columns: 1fr;
+      }
+
+      .field.full {
+        grid-column: auto;
+      }
+
+      .facts {
+        grid-template-columns: 1fr;
+      }
+
+      .fact:nth-child(odd) {
+        margin-right: 0;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="hero" id="start">
+    <nav class="nav" aria-label="Główna nawigacja">
+      <a href="#start" class="brand">
+        <span class="brand-mark">†</span>
+        <span>Parafia św. Stanisława Kostki</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="#ogloszenia">Ogłoszenia</a>
+        <a href="#msze">Msze</a>
+        <a href="#wydarzenia">Wydarzenia</a>
+        <a href="#kontakt">Kontakt</a>
+      </div>
+
+      <a href="#kontakt" class="nav-cta">Napisz do nas →</a>
+    </nav>
+
+    <div class="container hero-content">
+      <div class="hero-card">
+        <p class="eyebrow">Doruchów · Parafia rzymskokatolicka</p>
+        <h1>Parafia pw. św. Stanisława Kostki</h1>
+        <p>
+          Miejsce modlitwy, spotkania i wspólnoty.
+          Zapraszamy do poznania życia naszej parafii.
+        </p>
+
+        <div class="actions">
+          <a href="#ogloszenia" class="btn btn-primary">
+            Ogłoszenia parafialne
+            <span class="arrow">→</span>
+          </a>
+          <a href="#msze" class="btn">
+            Msze Święte
+            <span class="arrow">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Na dziś</p>
+            <h2>Najważniejsze informacje</h2>
+          </div>
+          <p>
+            Wszystko, czego potrzebujesz, aby być na bieżąco
+            z życiem naszej wspólnoty.
+          </p>
+        </div>
+
+        <div class="quick-grid">
+          <article class="card info-card">
+            <span class="number">01</span>
+            <h3>Ogłoszenia</h3>
+            <p>Najnowsze informacje i komunikaty parafialne.</p>
+            <a class="text-link" href="#ogloszenia">Czytaj ogłoszenia →</a>
+          </article>
+
+          <article class="card info-card">
+            <span class="number">02</span>
+            <h3>Msze Święte</h3>
+            <p>Sprawdź godziny Eucharystii w naszej parafii.</p>
+            <a class="text-link" href="#msze">Zobacz godziny →</a>
+          </article>
+
+          <article class="card info-card">
+            <span class="number">03</span>
+            <h3>Kancelaria</h3>
+            <p>Godziny otwarcia oraz informacje kontaktowe.</p>
+            <a class="text-link" href="#kancelaria">Sprawdź →</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section mass-section" id="msze">
+      <div class="container mass-layout">
+        <div class="mass-intro">
+          <p class="eyebrow">Eucharystia</p>
+          <h2>Msze Święte</h2>
+          <p>
+            Zapraszamy do wspólnej modlitwy i uczestnictwa
+            w Eucharystii w kościele parafialnym w Doruchowie.
+          </p>
+        </div>
+
+        <div class="mass-schedule">
+          <div class="schedule-row">
+            <div class="schedule-label">Dni powszednie</div>
+            <div class="schedule-times">
+              <span class="time">18:00</span>
+            </div>
+          </div>
+
+          <div class="schedule-row">
+            <div class="schedule-label">Niedziela</div>
+            <div class="schedule-times">
+              <span class="time">07:00</span>
+              <span class="time">08:30</span>
+              <span class="time">10:00</span>
+              <span class="time">11:30</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="ogloszenia">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Aktualności</p>
+            <h2>Ogłoszenia parafialne</h2>
+          </div>
+          <a href="#" class="text-link">Wszystkie ogłoszenia →</a>
+        </div>
+
+        <div class="announcement-list">
+          <article class="announcement">
+            <div class="announcement-date">13 sierpnia 2026</div>
+            <div>
+              <h3>Ogłoszenia parafialne</h3>
+              <p>Najnowsze informacje dotyczące życia i wydarzeń parafialnych.</p>
+            </div>
+            <a href="#" class="text-link">Czytaj →</a>
+          </article>
+
+          <article class="announcement">
+            <div class="announcement-date">9 sierpnia 2026</div>
+            <div>
+              <h3>Informacje na najbliższy tydzień</h3>
+              <p>Godziny nabożeństw, spotkań i najważniejsze informacje.</p>
+            </div>
+            <a href="#" class="text-link">Czytaj →</a>
+          </article>
+
+          <article class="announcement">
+            <div class="announcement-date">2 sierpnia 2026</div>
+            <div>
+              <h3>Życie naszej wspólnoty</h3>
+              <p>Zapowiedzi wydarzeń i informacje dla parafian.</p>
+            </div>
+            <a href="#" class="text-link">Czytaj →</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="atmospheric">
+      <div class="container">
+        <div class="atmospheric-card">
+          <div class="atmospheric-content">
+            <p class="eyebrow">Życie wspólnoty</p>
+            <h2>Razem tworzymy parafię.</h2>
+            <p>
+              Zobacz najważniejsze wydarzenia, uroczystości
+              i chwile, które przeżywaliśmy razem.
+            </p>
+            <a href="#wydarzenia" class="btn">
+              Zobacz wydarzenia
+              <span class="arrow">→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="wydarzenia">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Galeria · Blog</p>
+            <h2>Życie naszej wspólnoty</h2>
+          </div>
+          <p>
+            Zdjęcia, wspomnienia i relacje z wydarzeń parafialnych.
+          </p>
+        </div>
+
+        <div class="events-grid">
+          <a href="#" class="event-card large">
+            <img src="images/odpust.jpg" alt="Uroczystość parafialna">
+            <div class="event-overlay">
+              <p class="eyebrow">15 czerwca 2026</p>
+              <h3>Uroczystość odpustowa</h3>
+            </div>
+          </a>
+
+          <a href="#" class="event-card">
+            <img src="images/procesja.jpg" alt="Procesja parafialna">
+            <div class="event-overlay">
+              <p class="eyebrow">Czerwiec 2026</p>
+              <h3>Procesja</h3>
+            </div>
+          </a>
+
+          <a href="#" class="event-card">
+            <img src="images/dzieci.jpg" alt="Wydarzenie dla dzieci">
+            <div class="event-overlay">
+              <p class="eyebrow">Maj 2026</p>
+              <h3>Wspólnota dzieci</h3>
+            </div>
+          </a>
+
+          <a href="#" class="event-card">
+            <img src="images/pielgrzymka.jpg" alt="Pielgrzymka parafialna">
+            <div class="event-overlay">
+              <p class="eyebrow">Kwiecień 2026</p>
+              <h3>Pielgrzymka</h3>
+            </div>
+          </a>
+
+          <a href="#" class="event-card">
+            <img src="images/uroczystosc.jpg" alt="Uroczystość w parafii">
+            <div class="event-overlay">
+              <p class="eyebrow">Marzec 2026</p>
+              <h3>Wspólna modlitwa</h3>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section priest-section">
+      <div class="container priest-layout">
+        <div class="priest-photo">
+          <img src="images/proboszcz.jpg" alt="Proboszcz parafii">
+        </div>
+
+        <div class="priest-copy">
+          <p class="eyebrow">Posługa kapłańska</p>
+          <h2>Proboszcz parafii</h2>
+          <p class="priest-name">Ks. [Imię i nazwisko]</p>
+          <p>
+            Kilka słów o kapłanie, jego posłudze oraz codziennym
+            życiu wspólnoty parafialnej. To miejsce na krótki,
+            osobisty opis proboszcza.
+          </p>
+          <a href="#" class="text-link">Poznaj proboszcza →</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container about-layout">
+        <div class="about-copy">
+          <p class="eyebrow">O parafii</p>
+          <h2>Nasza parafia</h2>
+          <p>
+            Parafia pw. św. Stanisława Kostki w Doruchowie jest
+            miejscem modlitwy, spotkania i budowania wspólnoty.
+          </p>
+          <p>
+            W tej sekcji można umieścić historię parafii,
+            informacje o kościele, jego patronie oraz najważniejsze
+            informacje dotyczące życia wspólnoty.
+          </p>
+
+          <div class="facts">
+            <div class="fact">
+              <span class="fact-label">Patron</span>
+              <span class="fact-value">Św. Stanisław Kostka</span>
+            </div>
+            <div class="fact">
+              <span class="fact-label">Miejscowość</span>
+              <span class="fact-value">Doruchów</span>
+            </div>
+            <div class="fact">
+              <span class="fact-label">Wspólnota</span>
+              <span class="fact-value">Parafia rzymskokatolicka</span>
+            </div>
+            <div class="fact">
+              <span class="fact-label">Kościół</span>
+              <span class="fact-value">Kościół parafialny</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-photo">
+          <img src="images/wnetrze-kosciola.jpg" alt="Wnętrze kościoła parafialnego">
+        </div>
+      </div>
+    </section>
+
+    <section class="section contact-section" id="kontakt">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Kontakt</p>
+            <h2>Jesteśmy tutaj.</h2>
+          </div>
+          <p>
+            Masz pytanie? Skontaktuj się z kancelarią parafialną.
+          </p>
+        </div>
+
+        <div class="contact-grid">
+          <div id="kancelaria">
+            <div class="office-block">
+              <h3>Kancelaria parafialna</h3>
+
+              <div class="office-hours">
+                <div>Poniedziałek</div><div>16:00–17:00</div>
+                <div>Środa</div><div>16:00–17:00</div>
+                <div>Piątek</div><div>16:00–17:00</div>
+              </div>
+            </div>
+
+            <div class="contact-details">
+              <p>
+                <strong>Telefon</strong>
+                [numer telefonu]
+              </p>
+              <p>
+                <strong>E-mail</strong>
+                [adres e-mail]
+              </p>
+              <p>
+                <strong>Adres</strong>
+                Doruchów, Polska
+              </p>
+            </div>
+          </div>
+
+          <form class="form" action="#" method="post">
+            <div class="field">
+              <label for="name">Imię</label>
+              <input id="name" name="name" type="text" placeholder="Twoje imię">
+            </div>
+
+            <div class="field">
+              <label for="email">E-mail</label>
+              <input id="email" name="email" type="email" placeholder="twoj@email.pl">
+            </div>
+
+            <div class="field full">
+              <label for="subject">Temat</label>
+              <input id="subject" name="subject" type="text" placeholder="W czym możemy pomóc?">
+            </div>
+
+            <div class="field full">
+              <label for="message">Wiadomość</label>
+              <textarea id="message" name="message" placeholder="Napisz wiadomość..."></textarea>
+            </div>
+
+            <div class="field full">
+              <button class="btn btn-dark" type="submit">
+                Wyślij wiadomość
+                <span class="arrow">→</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="map">
+          <div class="map-marker">
+            <strong>Parafia pw. św. Stanisława Kostki</strong>
+            <span>Doruchów</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-statement">
+        Miejsce modlitwy,<br>
+        spotkania i wspólnoty.
+      </div>
+
+      <div class="footer-bottom">
+        <div>© 2026 Parafia pw. św. Stanisława Kostki w Doruchowie</div>
+
+        <div class="footer-links">
+          <a href="#start">Parafia</a>
+          <a href="#ogloszenia">Ogłoszenia</a>
+          <a href="#msze">Msze</a>
+          <a href="#wydarzenia">Wydarzenia</a>
+          <a href="#kontakt">Kontakt</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
