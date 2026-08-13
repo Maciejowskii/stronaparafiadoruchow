@@ -11,14 +11,14 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     return NextResponse.json({ error: "Brak uprawnień" }, { status: 401 });
   }
 
-  const id = parseInt(params.id, 10);
-  if (isNaN(id)) return NextResponse.json({ error: "Błędne ID" }, { status: 400 });
+  const id = params.id;
+  if (!id) return NextResponse.json({ error: "Błędne ID" }, { status: 400 });
 
   try {
     const { title, slug, date, excerpt, content, coverImage, galleryImages, isPublished } = await req.json();
     const store = await getStoreData();
 
-    const idx = store.blogPosts.findIndex((p) => p.id === id);
+    const idx = store.blogPosts.findIndex((p) => String(p.id) === String(id) || p.slug === id);
     if (idx !== -1) {
       store.blogPosts[idx] = {
         ...store.blogPosts[idx],
@@ -34,22 +34,29 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     }
 
     try {
-      await db
-        .update(blogPosts)
-        .set({
-          title,
-          slug,
-          date,
-          excerpt,
-          content,
-          coverImage,
-          galleryImages: Array.isArray(galleryImages) ? JSON.stringify(galleryImages) : galleryImages,
-          isPublished: isPublished ? 1 : 0,
-        })
-        .where(eq(blogPosts.id, id));
+      const numericId = parseInt(id, 10);
+      if (!isNaN(numericId)) {
+        await db
+          .update(blogPosts)
+          .set({
+            title,
+            slug,
+            date,
+            excerpt,
+            content,
+            coverImage,
+            galleryImages: Array.isArray(galleryImages) ? JSON.stringify(galleryImages) : galleryImages,
+            isPublished: isPublished ? 1 : 0,
+          })
+          .where(eq(blogPosts.id, numericId));
+      }
     } catch {}
 
-    await saveStoreData(store);
+    const saved = await saveStoreData(store);
+    if (!saved && process.env.BLOB_READ_WRITE_TOKEN) {
+      return NextResponse.json({ error: "Błąd podczas zapisu w chmurze" }, { status: 500 });
+    }
+
     revalidatePath("/", "layout");
     return NextResponse.json(store.blogPosts[idx] || { id });
   } catch (err) {
@@ -63,18 +70,25 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     return NextResponse.json({ error: "Brak uprawnień" }, { status: 401 });
   }
 
-  const id = parseInt(params.id, 10);
-  if (isNaN(id)) return NextResponse.json({ error: "Błędne ID" }, { status: 400 });
+  const id = params.id;
+  if (!id) return NextResponse.json({ error: "Błędne ID" }, { status: 400 });
 
   try {
     const store = await getStoreData();
-    store.blogPosts = store.blogPosts.filter((p) => p.id !== id);
+    store.blogPosts = store.blogPosts.filter((p) => String(p.id) !== String(id) && p.slug !== id);
 
     try {
-      await db.delete(blogPosts).where(eq(blogPosts.id, id));
+      const numericId = parseInt(id, 10);
+      if (!isNaN(numericId)) {
+        await db.delete(blogPosts).where(eq(blogPosts.id, numericId));
+      }
     } catch {}
 
-    await saveStoreData(store);
+    const saved = await saveStoreData(store);
+    if (!saved && process.env.BLOB_READ_WRITE_TOKEN) {
+      return NextResponse.json({ error: "Błąd podczas usuwania w chmurze" }, { status: 500 });
+    }
+
     revalidatePath("/", "layout");
     return NextResponse.json({ success: true });
   } catch (err) {

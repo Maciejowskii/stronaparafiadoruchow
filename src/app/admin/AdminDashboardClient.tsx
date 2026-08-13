@@ -411,6 +411,20 @@ export default function AdminDashboardClient({
     }
   };
 
+  // RESET DATABASE TO CLEAN STATE (Wipe residual demo data)
+  const handleResetToCleanState = async () => {
+    if (!confirm("Czy na pewno chcesz wyczyścić wszystkie ogłoszenia i artykuły do zera?")) return;
+    const res = await fetch("/api/admin/reset", { method: "POST" });
+    if (res.ok) {
+      setAnnouncementsList([]);
+      setBlogList([]);
+      notify("Wyczyszczono wszystkie ogłoszenia i artykuły!");
+      router.refresh();
+    } else {
+      notify("Błąd podczas resetowania danych");
+    }
+  };
+
   return (
     <div style={{ minHeight: "100vh", background: "var(--parchment)" }}>
       {/* Header Bar */}
@@ -443,7 +457,22 @@ export default function AdminDashboardClient({
             </strong>
           </div>
 
-          <div className="admin-header-actions" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <div className="admin-header-actions" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <button
+              onClick={handleResetToCleanState}
+              title="Usuwa wszystkie próbne ogłoszenia i wydarzenia"
+              style={{
+                color: "#ffc107",
+                fontSize: "12px",
+                padding: "6px 10px",
+                border: "1px solid rgba(255,193,7,0.4)",
+                background: "rgba(255,193,7,0.08)",
+                borderRadius: "6px",
+                cursor: "pointer",
+              }}
+            >
+              Wyczyść próbne dane
+            </button>
             <Link
               href="/"
               target="_blank"

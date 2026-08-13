@@ -1,17 +1,17 @@
 import { db } from "@/db";
 import { announcements, blogPosts, siteSettings } from "@/db/schema";
 import { desc } from "drizzle-orm";
-import { put, list } from "@vercel/blob";
+import { put, list, del } from "@vercel/blob";
 import { Announcement, BlogPost } from "@/db/schema";
 
-interface StorageData {
+export interface StorageData {
   announcements: Announcement[];
   blogPosts: BlogPost[];
   siteSettings: Record<string, any>;
 }
 
 // Initial clean data - no sample/demo posts
-const defaultSeedData: StorageData = {
+export const defaultSeedData: StorageData = {
   siteSettings: {
     mass_schedule: [
       { location: "Kościół parafialny w Doruchowie", label: "Dni powszednie", times: ["18:00"] },
@@ -45,7 +45,7 @@ const defaultSeedData: StorageData = {
   blogPosts: [],
 };
 
-const BLOB_DB_FILENAME = "data/parafia_store.json";
+const BLOB_STORE_PREFIX = "data/parafia_store";
 
 // Smart Put supporting both Public and Private Blob Stores
 export async function smartBlobPut(pathname: string, body: Buffer | string, contentType: string) {
@@ -55,8 +55,7 @@ export async function smartBlobPut(pathname: string, body: Buffer | string, cont
       access: "public",
       contentType,
       token,
-      addRandomSuffix: false,
-      allowOverwrite: true,
+      addRandomSuffix: true,
     });
   } catch (err: any) {
     console.warn("Public Blob put failed, retrying with private access:", err?.message);
@@ -64,8 +63,7 @@ export async function smartBlobPut(pathname: string, body: Buffer | string, cont
       access: "private",
       contentType,
       token,
-      addRandomSuffix: false,
-      allowOverwrite: true,
+      addRandomSuffix: true,
     });
   }
 }
@@ -76,10 +74,10 @@ export async function getStoreData(): Promise<StorageData> {
 
   if (token) {
     try {
-      const blobs = await list({ prefix: BLOB_DB_FILENAME, token });
-      if (blobs.blobs.length > 0) {
-        // Sort by uploadedAt descending to get latest version
-        const sortedBlobs = blobs.blobs.sort(
+      const { blobs } = await list({ prefix: BLOB_STORE_PREFIX, token });
+      if (blobs && blobs.length > 0) {
+        // Sort by uploadedAt descending to guarantee newest blob is selected
+        const sortedBlobs = blobs.sort(
           (a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()
         );
         const latestBlob = sortedBlobs[0];
@@ -138,15 +136,26 @@ export async function getStoreData(): Promise<StorageData> {
 // Save store data to Blob or SQLite
 export async function saveStoreData(data: StorageData): Promise<boolean> {
   const token = process.env.BLOB_READ_WRITE_TOKEN;
-  let blobSuccess = false;
 
   if (token) {
     try {
       const jsonContent = JSON.stringify(data, null, 2);
-      await smartBlobPut(BLOB_DB_FILENAME, jsonContent, "application/json");
-      blobSuccess = true;
+      const newBlob = await smartBlobPut("data/parafia_store.json", jsonContent, "application/json");
+
+      // Clean up older blobs in background
+      list({ prefix: BLOB_STORE_PREFIX, token })
+        .then(({ blobs }) => {
+          const oldBlobs = blobs.filter((b) => b.url !== newBlob.url);
+          if (oldBlobs.length > 0) {
+            del(oldBlobs.map((b) => b.url), { token }).catch(() => {});
+          }
+        })
+        .catch(() => {});
+
+      return true;
     } catch (err) {
       console.error("Failed to save store data to Vercel Blob:", err);
+      return false;
     }
   }
 
@@ -164,9 +173,7 @@ export async function saveStoreData(data: StorageData): Promise<boolean> {
     }
     return true;
   } catch (err) {
-    if (token && blobSuccess) {
-      return true;
-    }
+    console.error("Failed to save to SQLite:", err);
     return false;
   }
 }
