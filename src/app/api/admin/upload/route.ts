@@ -3,15 +3,17 @@ import { checkIsAdmin } from "@/lib/auth";
 import fs from "fs/promises";
 import path from "path";
 import sharp from "sharp";
-import { put, del, list } from "@vercel/blob";
+import { del, list } from "@vercel/blob";
+import { smartBlobPut } from "@/lib/store";
 
 export async function GET() {
   try {
     let blobFiles: string[] = [];
-    if (process.env.BLOB_READ_WRITE_TOKEN) {
+    const token = process.env.BLOB_READ_WRITE_TOKEN;
+    if (token) {
       try {
-        const { blobs } = await list({ prefix: "zdjecia/" });
-        blobFiles = blobs.map((b) => b.url);
+        const { blobs } = await list({ prefix: "zdjecia/", token });
+        blobFiles = blobs.map((b) => (b as any).downloadUrl || b.url);
       } catch (err) {
         console.error("Failed to list Vercel Blob files:", err);
       }
@@ -73,12 +75,9 @@ export async function POST(req: Request) {
         .toBuffer();
 
       if (useVercelBlob) {
-        // Upload to Vercel Blob cloud storage
-        const blob = await put(`zdjecia/${filename}`, optimizedBuffer, {
-          access: "public",
-          contentType: "image/webp",
-        });
-        uploadedUrls.push(blob.url);
+        // Upload to Vercel Blob using smartBlobPut (supports both Public & Private stores)
+        const blob = await smartBlobPut(`zdjecia/${filename}`, optimizedBuffer, "image/webp");
+        uploadedUrls.push((blob as any).downloadUrl || blob.url);
       } else {
         // Fallback to local storage
         const uploadPath = path.join(dirPath, filename);
@@ -111,13 +110,12 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: "Nieprawidłowa ścieżka pliku" }, { status: 400 });
     }
 
+    const token = process.env.BLOB_READ_WRITE_TOKEN;
     if (fileUrl.startsWith("http://") || fileUrl.startsWith("https://")) {
-      // Delete from Vercel Blob if cloud URL
-      if (process.env.BLOB_READ_WRITE_TOKEN) {
-        await del(fileUrl).catch(() => {});
+      if (token) {
+        await del(fileUrl, { token }).catch(() => {});
       }
     } else if (fileUrl.startsWith("/zdjecia/")) {
-      // Delete from local disk
       const filename = path.basename(fileUrl);
       const filePath = path.join(process.cwd(), "public", "zdjecia", filename);
       await fs.unlink(filePath).catch(() => {});

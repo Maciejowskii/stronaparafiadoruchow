@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { announcements, blogPosts, siteSettings } from "@/db/schema";
-import { desc, eq, sql } from "drizzle-orm";
+import { desc } from "drizzle-orm";
 import { put, list } from "@vercel/blob";
 import { Announcement, BlogPost } from "@/db/schema";
 
@@ -135,16 +135,49 @@ Bóg zapłać wszystkim darczyńcom oraz wykonawcom za troskę o piękno naszego
 
 const BLOB_DB_FILENAME = "data/parafia_store.json";
 
+// Smart Put supporting both Public and Private Blob Stores
+export async function smartBlobPut(pathname: string, body: Buffer | string, contentType: string) {
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
+  try {
+    // Try public mode first
+    return await put(pathname, body, {
+      access: "public",
+      contentType,
+      token,
+      addRandomSuffix: false,
+      allowOverwrite: true,
+    });
+  } catch (err: any) {
+    // If store is Private, retry with private access
+    console.warn("Public Blob put failed, retrying with private access:", err?.message);
+    return await put(pathname, body, {
+      access: "private",
+      contentType,
+      token,
+      addRandomSuffix: false,
+      allowOverwrite: true,
+    });
+  }
+}
+
 // Read store data from Blob or fallback to SQLite
 export async function getStoreData(): Promise<StorageData> {
-  const hasBlob = Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
 
-  if (hasBlob) {
+  if (token) {
     try {
-      const blobs = await list({ prefix: BLOB_DB_FILENAME });
+      const blobs = await list({ prefix: BLOB_DB_FILENAME, token });
       if (blobs.blobs.length > 0) {
         const latestBlob = blobs.blobs[0];
-        const res = await fetch(latestBlob.url, { cache: "no-store" });
+        const targetUrl = (latestBlob as any).downloadUrl || latestBlob.url;
+
+        const res = await fetch(targetUrl, {
+          cache: "no-store",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
         if (res.ok) {
           const data = await res.json();
           return {
@@ -185,19 +218,15 @@ export async function getStoreData(): Promise<StorageData> {
   }
 }
 
+// Save store data to Blob or SQLite
 export async function saveStoreData(data: StorageData): Promise<boolean> {
-  const hasBlob = Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
   let blobSuccess = false;
 
-  if (hasBlob) {
+  if (token) {
     try {
       const jsonContent = JSON.stringify(data, null, 2);
-      await put(BLOB_DB_FILENAME, jsonContent, {
-        access: "public",
-        contentType: "application/json",
-        addRandomSuffix: false,
-        allowOverwrite: true,
-      });
+      await smartBlobPut(BLOB_DB_FILENAME, jsonContent, "application/json");
       blobSuccess = true;
     } catch (err) {
       console.error("Failed to save store data to Vercel Blob:", err);
@@ -218,8 +247,7 @@ export async function saveStoreData(data: StorageData): Promise<boolean> {
     }
     return true;
   } catch (err) {
-    // If running on Vercel where filesystem/SQLite is read-only, return blobSuccess status
-    if (hasBlob && blobSuccess) {
+    if (token && blobSuccess) {
       return true;
     }
     return false;
