@@ -344,10 +344,7 @@ export default function AdminDashboardClient({
           borderBottom: "1px solid rgba(255,255,255,0.1)",
         }}
       >
-        <div
-          className="container"
-          style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
-        >
+        <div className="container admin-header-inner">
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <span
               style={{
@@ -358,6 +355,7 @@ export default function AdminDashboardClient({
                 display: "grid",
                 placeItems: "center",
                 fontFamily: "var(--serif)",
+                flexShrink: 0,
               }}
             >
               †
@@ -367,7 +365,7 @@ export default function AdminDashboardClient({
             </strong>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <div className="admin-header-actions" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
             <Link
               href="/"
               target="_blank"
@@ -402,43 +400,18 @@ export default function AdminDashboardClient({
       </header>
 
       {/* Main Admin Area */}
-      <div className="container" style={{ padding: "32px 0 64px" }}>
+      <div className="container" style={{ padding: "24px 0 64px" }}>
         {saveStatus && (
-          <div
-            style={{
-              position: "fixed",
-              bottom: "24px",
-              right: "24px",
-              zIndex: 300,
-              padding: "14px 24px",
-              background: "var(--twilight)",
-              color: "#fff",
-              borderRadius: "8px",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
-              fontWeight: 500,
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-            }}
-          >
+          <div className="admin-toast">
             <Check size={18} color="#41a1cf" /> {saveStatus}
           </div>
         )}
 
         {/* Navigation Tabs */}
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "8px",
-            marginBottom: "32px",
-            borderBottom: "1px solid var(--mist)",
-            paddingBottom: "12px",
-          }}
-        >
+        <div className="admin-tabs-nav">
           <button
             onClick={() => setActiveTab("ogloszenia")}
-            className="btn"
+            className="btn admin-tab-btn"
             style={{
               borderColor: activeTab === "ogloszenia" ? "var(--blue)" : "var(--mist)",
               background: activeTab === "ogloszenia" ? "rgba(65,161,207,0.1)" : "transparent",
@@ -452,7 +425,7 @@ export default function AdminDashboardClient({
           </button>
           <button
             onClick={() => setActiveTab("blog")}
-            className="btn"
+            className="btn admin-tab-btn"
             style={{
               borderColor: activeTab === "blog" ? "var(--blue)" : "var(--mist)",
               background: activeTab === "blog" ? "rgba(65,161,207,0.1)" : "transparent",
@@ -466,7 +439,7 @@ export default function AdminDashboardClient({
           </button>
           <button
             onClick={() => setActiveTab("msze")}
-            className="btn"
+            className="btn admin-tab-btn"
             style={{
               borderColor: activeTab === "msze" ? "var(--blue)" : "var(--mist)",
               background: activeTab === "msze" ? "rgba(65,161,207,0.1)" : "transparent",
@@ -480,7 +453,7 @@ export default function AdminDashboardClient({
           </button>
           <button
             onClick={() => setActiveTab("kancelaria")}
-            className="btn"
+            className="btn admin-tab-btn"
             style={{
               borderColor: activeTab === "kancelaria" ? "var(--blue)" : "var(--mist)",
               background: activeTab === "kancelaria" ? "rgba(65,161,207,0.1)" : "transparent",
@@ -494,7 +467,7 @@ export default function AdminDashboardClient({
           </button>
           <button
             onClick={() => setActiveTab("parafia")}
-            className="btn"
+            className="btn admin-tab-btn"
             style={{
               borderColor: activeTab === "parafia" ? "var(--blue)" : "var(--mist)",
               background: activeTab === "parafia" ? "rgba(65,161,207,0.1)" : "transparent",
@@ -508,7 +481,7 @@ export default function AdminDashboardClient({
           </button>
           <button
             onClick={() => setActiveTab("zdjecia")}
-            className="btn"
+            className="btn admin-tab-btn"
             style={{
               borderColor: activeTab === "zdjecia" ? "var(--blue)" : "var(--mist)",
               background: activeTab === "zdjecia" ? "rgba(65,161,207,0.1)" : "transparent",
@@ -524,7 +497,7 @@ export default function AdminDashboardClient({
 
         {/* TAB 1: OGŁOSZENIA */}
         {activeTab === "ogloszenia" && (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: "32px" }}>
+          <div className="admin-grid-2col">
             <div className="card" style={{ padding: "28px" }}>
               <h3 style={{ margin: "0 0 20px" }}>
                 {annForm.id ? "Edytuj Ogłoszenie" : "Dodaj Nowe Ogłoszenie"}
@@ -593,7 +566,7 @@ export default function AdminDashboardClient({
                   <div
                     key={ann.id}
                     className="card"
-                    style={{ padding: "20px", display: "flex", justifyContent: "space-between", gap: "16px" }}
+                    style={{ padding: "20px", display: "flex", justifyContent: "space-between", gap: "16px", flexWrap: "wrap" }}
                   >
                     <div>
                       <span className="eyebrow" style={{ fontSize: "11px" }}>{ann.date}</span>
@@ -654,7 +627,7 @@ export default function AdminDashboardClient({
 
         {/* TAB 2: BLOG & WYDARZENIA */}
         {activeTab === "blog" && (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: "32px" }}>
+          <div className="admin-grid-2col">
             <div className="card" style={{ padding: "28px" }}>
               <h3 style={{ margin: "0 0 20px" }}>
                 {blogForm.id ? "Edytuj wpis w blogu" : "Dodaj Nowy Wpis / Wydarzenie"}
@@ -857,7 +830,7 @@ export default function AdminDashboardClient({
 
             <div>
               <h3 style={{ marginBottom: "20px" }}>Opublikowane wydarzenia</h3>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+              <div className="admin-grid-cards">
                 {blogList.map((post) => (
                   <div
                     key={post.id}
@@ -932,7 +905,7 @@ export default function AdminDashboardClient({
                   background: "var(--linen)",
                 }}
               >
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+                <div className="admin-grid-equal" style={{ marginBottom: "16px" }}>
                   <div className="field" style={{ margin: 0 }}>
                     <label>Lokalizacja kościoła</label>
                     <select
@@ -1071,11 +1044,11 @@ export default function AdminDashboardClient({
 
         {/* TAB 4: KANCELARIA & VACATION ALERT */}
         {activeTab === "kancelaria" && (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "32px" }}>
+          <div className="admin-grid-equal">
             <div className="card" style={{ padding: "28px" }}>
               <h3 style={{ margin: "0 0 20px" }}>Godziny otwarcia Kancelarii</h3>
               {officeHours.map((item, idx) => (
-                <div key={idx} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
+                <div key={idx} className="admin-grid-equal" style={{ gap: "12px", marginBottom: "12px" }}>
                   <input
                     type="text"
                     value={item.day}
@@ -1179,7 +1152,7 @@ export default function AdminDashboardClient({
 
         {/* TAB 5: PARAFIA & PROBOSZCZ */}
         {activeTab === "parafia" && (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "32px" }}>
+          <div className="admin-grid-equal">
             <div className="card" style={{ padding: "28px" }}>
               <h3 style={{ margin: "0 0 20px" }}>Duszpasterz / Proboszcz</h3>
               <div className="field">

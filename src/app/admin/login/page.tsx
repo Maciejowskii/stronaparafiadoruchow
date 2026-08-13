@@ -51,7 +51,7 @@ export default function AdminLoginPage() {
         style={{
           maxWidth: "420px",
           width: "100%",
-          padding: "36px",
+          padding: "clamp(24px, 5vw, 36px)",
           background: "var(--paper)",
           border: "1px solid var(--mist)",
           borderRadius: "var(--radius-large)",
@@ -77,7 +77,7 @@ export default function AdminLoginPage() {
           <p className="eyebrow" style={{ marginBottom: "4px" }}>
             Parafia Doruchów
           </p>
-          <h1 style={{ fontSize: "28px", margin: 0 }}>Panel Administratora</h1>
+          <h1 style={{ fontSize: "clamp(22px, 5vw, 28px)", margin: 0 }}>Panel Administratora</h1>
         </div>
 
         <form onSubmit={handleLogin}>
