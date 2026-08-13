@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ExternalLink } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -13,7 +14,7 @@ export default function Footer() {
         <div
           style={{
             maxWidth: "850px",
-            marginBottom: "60px",
+            marginBottom: "48px",
             fontFamily: "var(--serif)",
             fontSize: "clamp(36px, 5vw, 64px)",
             lineHeight: 1.05,
@@ -25,6 +26,61 @@ export default function Footer() {
           spotkania i wspólnoty.
         </div>
 
+        {/* DIOCESAN LINKS BAR */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+            gap: "20px",
+            padding: "24px 0",
+            borderTop: "1px solid var(--mist)",
+            borderBottom: "1px solid var(--mist)",
+            marginBottom: "32px",
+          }}
+        >
+          <div>
+            <span style={{ fontSize: "11px", fontWeight: 700, color: "var(--ash)", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "8px" }}>
+              Telewizja Diecezjalna
+            </span>
+            <a
+              href="https://www.youtube.com/@DOMJOZEFATV"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "var(--graphite)", fontWeight: 500, fontSize: "14px", display: "inline-flex", alignItems: "center", gap: "4px" }}
+            >
+              Dom Józefa TV (YouTube) <ExternalLink size={13} color="var(--ash)" />
+            </a>
+          </div>
+
+          <div>
+            <span style={{ fontSize: "11px", fontWeight: 700, color: "var(--ash)", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "8px" }}>
+              Oficjalny Portal
+            </span>
+            <a
+              href="https://www.diecezja.kalisz.pl/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "var(--graphite)", fontWeight: 500, fontSize: "14px", display: "inline-flex", alignItems: "center", gap: "4px" }}
+            >
+              Diecezja Kaliska <ExternalLink size={13} color="var(--ash)" />
+            </a>
+          </div>
+
+          <div>
+            <span style={{ fontSize: "11px", fontWeight: 700, color: "var(--ash)", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "8px" }}>
+              Radio Diecezjalne
+            </span>
+            <a
+              href="https://www.radiorodzina.kalisz.pl/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "var(--graphite)", fontWeight: 500, fontSize: "14px", display: "inline-flex", alignItems: "center", gap: "4px" }}
+            >
+              Radio Rodzina Kalisz <ExternalLink size={13} color="var(--ash)" />
+            </a>
+          </div>
+        </div>
+
         <div
           style={{
             display: "flex",
@@ -32,8 +88,6 @@ export default function Footer() {
             justifyContent: "space-between",
             alignItems: "center",
             gap: "20px",
-            paddingTop: "24px",
-            borderTop: "1px solid var(--mist)",
             color: "var(--ash)",
             fontSize: "13px",
           }}

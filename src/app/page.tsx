@@ -10,6 +10,7 @@ import AtmosphericSection from "@/components/AtmosphericSection";
 import BlogGrid from "@/components/BlogGrid";
 import PriestSection from "@/components/PriestSection";
 import AboutSection from "@/components/AboutSection";
+import MediaSection from "@/components/MediaSection";
 import OfficeSection from "@/components/OfficeSection";
 import Footer from "@/components/Footer";
 import OfficeAlertBanner from "@/components/OfficeAlertBanner";
@@ -54,6 +55,7 @@ export default async function HomePage() {
         <BlogGrid posts={publishedBlogPosts} limit={3} showMoreBtn={true} />
         <PriestSection priest={settings.priest_info} />
         <AboutSection />
+        <MediaSection />
         <OfficeSection
           officeHours={settings.office_hours}
           vacationInfo={settings.office_vacation}
