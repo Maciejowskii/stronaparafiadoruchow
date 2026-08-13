@@ -3,17 +3,20 @@ import { checkIsAdmin } from "@/lib/auth";
 import fs from "fs/promises";
 import path from "path";
 import sharp from "sharp";
+import { put, del } from "@vercel/blob";
 
 export async function GET() {
   try {
     const dirPath = path.join(process.cwd(), "public", "zdjecia");
-    const files = await fs.readdir(dirPath);
+    let localFiles: string[] = [];
+    try {
+      const files = await fs.readdir(dirPath);
+      localFiles = files
+        .filter((file) => /\.(jpg|jpeg|png|webp|jfif|gif)$/i.test(file))
+        .map((file) => `/zdjecia/${file}`);
+    } catch {}
 
-    const imageFiles = files
-      .filter((file) => /\.(jpg|jpeg|png|webp|jfif|gif)$/i.test(file))
-      .map((file) => `/zdjecia/${file}`);
-
-    return NextResponse.json({ images: imageFiles });
+    return NextResponse.json({ images: localFiles });
   } catch (err) {
     console.error("Failed to read zdjecia dir:", err);
     return NextResponse.json({ images: [] });
@@ -37,26 +40,39 @@ export async function POST(req: Request) {
     }
 
     const uploadedUrls: string[] = [];
-    const dirPath = path.join(process.cwd(), "public", "zdjecia");
+    const useVercelBlob = Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 
-    // Ensure directory exists
-    await fs.mkdir(dirPath, { recursive: true });
+    const dirPath = path.join(process.cwd(), "public", "zdjecia");
+    if (!useVercelBlob) {
+      await fs.mkdir(dirPath, { recursive: true });
+    }
 
     for (const file of allFilesToProcess) {
       const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+      const rawBuffer = Buffer.from(bytes);
 
       const baseName = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9.-]/g, "_");
       const filename = `${Date.now()}-${Math.random().toString(36).substring(2, 6)}-${baseName}.webp`;
-      const uploadPath = path.join(dirPath, filename);
 
-      // Ultra optimization with Sharp: convert to WebP, resize max 1920px width, quality 80
-      await sharp(buffer)
+      // Ultra optimization with Sharp: convert to WebP, max 1920px
+      const optimizedBuffer = await sharp(rawBuffer)
         .resize({ width: 1920, height: 1920, fit: "inside", withoutEnlargement: true })
         .webp({ quality: 80 })
-        .toFile(uploadPath);
+        .toBuffer();
 
-      uploadedUrls.push(`/zdjecia/${filename}`);
+      if (useVercelBlob) {
+        // Upload to Vercel Blob cloud storage
+        const blob = await put(`zdjecia/${filename}`, optimizedBuffer, {
+          access: "public",
+          contentType: "image/webp",
+        });
+        uploadedUrls.push(blob.url);
+      } else {
+        // Fallback to local storage
+        const uploadPath = path.join(dirPath, filename);
+        await fs.writeFile(uploadPath, optimizedBuffer);
+        uploadedUrls.push(`/zdjecia/${filename}`);
+      }
     }
 
     return NextResponse.json({
@@ -79,14 +95,21 @@ export async function DELETE(req: Request) {
     const { searchParams } = new URL(req.url);
     const fileUrl = searchParams.get("file");
 
-    if (!fileUrl || !fileUrl.startsWith("/zdjecia/")) {
+    if (!fileUrl) {
       return NextResponse.json({ error: "Nieprawidłowa ścieżka pliku" }, { status: 400 });
     }
 
-    const filename = path.basename(fileUrl);
-    const filePath = path.join(process.cwd(), "public", "zdjecia", filename);
-
-    await fs.unlink(filePath).catch(() => {});
+    if (fileUrl.startsWith("http://") || fileUrl.startsWith("https://")) {
+      // Delete from Vercel Blob if cloud URL
+      if (process.env.BLOB_READ_WRITE_TOKEN) {
+        await del(fileUrl).catch(() => {});
+      }
+    } else if (fileUrl.startsWith("/zdjecia/")) {
+      // Delete from local disk
+      const filename = path.basename(fileUrl);
+      const filePath = path.join(process.cwd(), "public", "zdjecia", filename);
+      await fs.unlink(filePath).catch(() => {});
+    }
 
     return NextResponse.json({ success: true, message: "Usunięto zdjęcie" });
   } catch (err) {
