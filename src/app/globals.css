@@ -93,6 +93,11 @@ select {
   font-weight: 500;
 }
 
+h1, h2, h3, h4, h5, h6, p, span, a, div, article {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 h1, h2, h3, h4, p {
   margin-top: 0;
   font-family: var(--font-sans);
@@ -219,6 +224,9 @@ p {
   border: 1px solid var(--mist);
   border-radius: var(--radius-card);
   background: var(--paper);
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
   box-shadow: 0 1px 1px rgba(0,0,0,.08), 0 4px 5px rgba(0,0,0,.055);
 }
 

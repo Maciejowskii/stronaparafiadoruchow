@@ -686,11 +686,11 @@ export default function AdminDashboardClient({
                   <div
                     key={ann.id}
                     className="card"
-                    style={{ padding: "20px", display: "flex", justifyContent: "space-between", gap: "16px", flexWrap: "wrap" }}
+                    style={{ padding: "20px", display: "flex", justifyContent: "space-between", gap: "16px", flexWrap: "wrap", minWidth: 0 }}
                   >
-                    <div>
+                    <div style={{ flex: "1 1 200px", minWidth: 0 }}>
                       <span className="eyebrow" style={{ fontSize: "11px" }}>{ann.date}</span>
-                      <h4 style={{ margin: "4px 0 8px", fontSize: "18px", fontFamily: "var(--serif)" }}>
+                      <h4 style={{ margin: "4px 0 8px", fontSize: "18px", fontFamily: "var(--serif)", overflowWrap: "anywhere", wordBreak: "break-word" }}>
                         {ann.title}
                       </h4>
                       <p
@@ -702,12 +702,14 @@ export default function AdminDashboardClient({
                           WebkitLineClamp: 2,
                           WebkitBoxOrient: "vertical",
                           overflow: "hidden",
+                          overflowWrap: "anywhere",
+                          wordBreak: "break-word",
                         }}
                       >
                         {ann.content}
                       </p>
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "6px", flexShrink: 0 }}>
                       <button
                         onClick={() =>
                           setAnnForm({

@@ -44,7 +44,7 @@ export default async function BlogPostPage({ params }: Props) {
     <>
       <Navigation />
       <main style={{ minHeight: "100vh", paddingTop: "120px", paddingBottom: "88px" }}>
-        <article className="container" style={{ maxWidth: "800px" }}>
+        <article className="container" style={{ maxWidth: "800px", minWidth: 0, overflowWrap: "anywhere", wordBreak: "break-word" }}>
           <Link
             href="/blog"
             style={{
@@ -58,7 +58,7 @@ export default async function BlogPostPage({ params }: Props) {
           </Link>
 
           <p className="eyebrow">{post.date}</p>
-          <h1 style={{ fontSize: "clamp(32px, 5vw, 48px)", margin: "0 0 24px", lineHeight: 1.15 }}>
+          <h1 style={{ fontSize: "clamp(32px, 5vw, 48px)", margin: "0 0 24px", lineHeight: 1.15, overflowWrap: "anywhere", wordBreak: "break-word" }}>
             {post.title}
           </h1>
 
@@ -84,6 +84,9 @@ export default async function BlogPostPage({ params }: Props) {
               lineHeight: 1.8,
               color: "var(--graphite)",
               whiteSpace: "pre-wrap",
+              overflowWrap: "anywhere",
+              wordBreak: "break-word",
+              maxWidth: "100%",
             }}
           >
             {post.content}

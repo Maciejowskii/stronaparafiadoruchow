@@ -120,14 +120,16 @@ export default function Announcements({ announcements, limit, showMoreBtn, enabl
                     </div>
 
                     {/* Liturgical Title & Main Content Preview */}
-                    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "20px", alignItems: "flex-start" }}>
-                      <div style={{ flex: "1 1 280px" }}>
+                    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "20px", alignItems: "flex-start", minWidth: 0 }}>
+                      <div style={{ flex: "1 1 280px", minWidth: 0 }}>
                         <h3
                           style={{
                             fontSize: "clamp(24px, 3.5vw, 32px)",
                             marginBottom: "12px",
                             color: "var(--graphite)",
                             lineHeight: 1.1,
+                            overflowWrap: "anywhere",
+                            wordBreak: "break-word",
                           }}
                         >
                           {item.title}
@@ -143,6 +145,8 @@ export default function Announcements({ announcements, limit, showMoreBtn, enabl
                             WebkitLineClamp: 3,
                             WebkitBoxOrient: "vertical",
                             overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            wordBreak: "break-word",
                           }}
                         >
                           {item.content}
@@ -158,6 +162,7 @@ export default function Announcements({ announcements, limit, showMoreBtn, enabl
                           display: "inline-flex",
                           alignItems: "center",
                           gap: "6px",
+                          flexShrink: 0,
                         }}
                       >
                         Pełna treść <ChevronRight size={16} />
@@ -251,12 +256,14 @@ export default function Announcements({ announcements, limit, showMoreBtn, enabl
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
-              <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px", gap: "16px" }}>
+              <div style={{ flex: "1 1 0%", minWidth: 0 }}>
                 <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "var(--blue)", fontSize: "13px", fontWeight: 500, marginBottom: "6px" }}>
                   <Calendar size={15} /> {selected.date}
                 </div>
-                <h2 style={{ fontSize: "32px", margin: 0, color: "var(--graphite)" }}>{selected.title}</h2>
+                <h2 style={{ fontSize: "clamp(24px, 4vw, 32px)", margin: 0, color: "var(--graphite)", overflowWrap: "anywhere", wordBreak: "break-word" }}>
+                  {selected.title}
+                </h2>
               </div>
               <button
                 onClick={() => setSelected(null)}
@@ -270,6 +277,7 @@ export default function Announcements({ announcements, limit, showMoreBtn, enabl
                   placeItems: "center",
                   cursor: "pointer",
                   color: "var(--charcoal)",
+                  flexShrink: 0,
                 }}
               >
                 <X size={18} />
@@ -279,6 +287,8 @@ export default function Announcements({ announcements, limit, showMoreBtn, enabl
             <div
               style={{
                 whiteSpace: "pre-wrap",
+                overflowWrap: "anywhere",
+                wordBreak: "break-word",
                 color: "var(--charcoal)",
                 fontSize: "16px",
                 lineHeight: 1.75,
