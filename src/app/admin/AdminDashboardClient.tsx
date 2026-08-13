@@ -16,6 +16,7 @@ import {
   Check,
   Plus,
   X,
+  Trash2,
 } from "lucide-react";
 
 interface Props {
@@ -306,6 +307,29 @@ export default function AdminDashboardClient({
       }
     } catch {
       notify("Błąd połączenia podczas przesyłania plików");
+    }
+  };
+
+  // DELETE PHOTO FROM GALLERY
+  const handleDeletePhoto = async (photoUrl: string) => {
+    if (!confirm(`Czy na pewno trwale usunąć zdjęcie ${photoUrl}?`)) return;
+
+    const res = await fetch(`/api/admin/upload?file=${encodeURIComponent(photoUrl)}`, {
+      method: "DELETE",
+    });
+
+    if (res.ok) {
+      setPhotosList((prev) => prev.filter((p) => p !== photoUrl));
+      // Also clean up from active blogForm if selected
+      if (blogForm) {
+        setBlogForm((prev) => ({
+          ...prev,
+          galleryImages: prev.galleryImages.filter((p) => p !== photoUrl),
+        }));
+      }
+      notify("Usunięto zdjęcie z galerii");
+    } else {
+      notify("Błąd podczas usuwania zdjęcia");
     }
   };
 
@@ -1296,7 +1320,29 @@ export default function AdminDashboardClient({
                   className="card"
                   style={{ overflow: "hidden", position: "relative" }}
                 >
-                  <img src={photo} alt={photo} loading="lazy" style={{ height: "160px", objectFit: "cover", width: "100%" }} />
+                  <img src={photo} alt={photo} loading="lazy" style={{ height: "160px", objectFit: "cover", width: "100%", display: "block" }} />
+                  <button
+                    type="button"
+                    onClick={() => handleDeletePhoto(photo)}
+                    title="Usuń to zdjęcie"
+                    style={{
+                      position: "absolute",
+                      top: "8px",
+                      right: "8px",
+                      background: "rgba(197,34,31,0.9)",
+                      border: "none",
+                      color: "#fff",
+                      borderRadius: "50%",
+                      width: "32px",
+                      height: "32px",
+                      display: "grid",
+                      placeItems: "center",
+                      cursor: "pointer",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+                    }}
+                  >
+                    <Trash2 size={16} />
+                  </button>
                   <div style={{ padding: "10px", fontSize: "12px", color: "var(--ash)", wordBreak: "break-all" }}>
                     {photo}
                   </div>

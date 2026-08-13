@@ -69,3 +69,28 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Błąd podczas optymalizacji i zapisywania plików" }, { status: 500 });
   }
 }
+
+export async function DELETE(req: Request) {
+  if (!checkIsAdmin()) {
+    return NextResponse.json({ error: "Brak uprawnień" }, { status: 401 });
+  }
+
+  try {
+    const { searchParams } = new URL(req.url);
+    const fileUrl = searchParams.get("file");
+
+    if (!fileUrl || !fileUrl.startsWith("/zdjecia/")) {
+      return NextResponse.json({ error: "Nieprawidłowa ścieżka pliku" }, { status: 400 });
+    }
+
+    const filename = path.basename(fileUrl);
+    const filePath = path.join(process.cwd(), "public", "zdjecia", filename);
+
+    await fs.unlink(filePath).catch(() => {});
+
+    return NextResponse.json({ success: true, message: "Usunięto zdjęcie" });
+  } catch (err) {
+    console.error("Delete error:", err);
+    return NextResponse.json({ error: "Błąd podczas usuwania zdjęcia" }, { status: 500 });
+  }
+}
