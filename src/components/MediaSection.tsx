@@ -1,6 +1,6 @@
 "use client";
 
-import { Tv, Radio, Globe, ExternalLink, Play } from "lucide-react";
+import { Tv, Radio, Globe, ExternalLink, Play, Youtube } from "lucide-react";
 import MotionReveal from "./MotionReveal";
 
 export default function MediaSection() {
@@ -35,7 +35,7 @@ export default function MediaSection() {
             alignItems: "stretch",
           }}
         >
-          {/* DOM JÓZEFA TV EMBED PLAYER */}
+          {/* DOM JÓZEFA TV CARD */}
           <MotionReveal delay={0.1}>
             <div
               className="card"
@@ -47,7 +47,7 @@ export default function MediaSection() {
                 background: "var(--linen)",
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "14px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
                 <span
                   style={{
                     width: "36px",
@@ -67,37 +67,80 @@ export default function MediaSection() {
                 </div>
               </div>
 
-              {/* YouTube Responsive Embed */}
-              <div
+              {/* Branded Interactive TV Screen Player Box */}
+              <a
+                href="https://www.youtube.com/@DOMJOZEFATV"
+                target="_blank"
+                rel="noopener noreferrer"
                 style={{
                   position: "relative",
                   width: "100%",
-                  paddingTop: "56.25%", // 16:9 Aspect Ratio
+                  height: "220px",
                   borderRadius: "12px",
                   overflow: "hidden",
                   marginBottom: "16px",
-                  background: "#000",
-                  boxShadow: "0 4px 14px rgba(0,0,0,0.12)",
+                  background: "linear-gradient(135deg, #1f1414 0%, #120a0a 100%)",
+                  border: "1px solid rgba(197,34,31,0.3)",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  padding: "16px",
+                  color: "#fff",
+                  textDecoration: "none",
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
                 }}
               >
-                <iframe
-                  title="Dom Józefa TV - Najnowsze transmisje"
-                  src="https://www.youtube-nocookie.com/embed?listType=playlist&list=PL4fL_A4XyP2WJ5K_N2nL"
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    border: 0,
-                  }}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              </div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span
+                    style={{
+                      background: "#c5221f",
+                      color: "#fff",
+                      fontSize: "11px",
+                      fontWeight: 700,
+                      padding: "4px 8px",
+                      borderRadius: "4px",
+                      textTransform: "uppercase",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "4px",
+                    }}
+                  >
+                    <Youtube size={14} /> Na Żywo & VOD
+                  </span>
+                  <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.7)" }}>@DOMJOZEFATV</span>
+                </div>
+
+                {/* Big Centered Play Button */}
+                <div style={{ textAlign: "center" }}>
+                  <span
+                    style={{
+                      width: "56px",
+                      height: "56px",
+                      borderRadius: "50%",
+                      background: "#c5221f",
+                      color: "#fff",
+                      display: "inline-grid",
+                      placeItems: "center",
+                      boxShadow: "0 4px 20px rgba(197,34,31,0.5)",
+                      transition: "transform 0.2s ease",
+                    }}
+                  >
+                    <Play size={24} style={{ marginLeft: "4px" }} />
+                  </span>
+                </div>
+
+                <div>
+                  <strong style={{ display: "block", fontSize: "16px", color: "#fff" }}>
+                    Telewizja Dom Józefa TV
+                  </strong>
+                  <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.7)" }}>
+                    Kliknij, aby otworzyć najnowsze transmisje i filmy na YouTube
+                  </span>
+                </div>
+              </a>
 
               <p style={{ fontSize: "14px", color: "var(--ash)", marginBottom: "16px" }}>
-                Oficjalny kanał telewizyjny z transmisjami mszy, uroczystości diecezjalnych oraz magazynami religijnymi.
+                Oficjalny kanał telewizyjny Diecezji Kaliskiej. Transmisje Mszy Św., uroczystości odpustowych oraz rozmowy i magazyny katolickie.
               </p>
 
               <a
@@ -105,9 +148,9 @@ export default function MediaSection() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-primary"
-                style={{ marginTop: "auto", justifyContent: "center", width: "100%" }}
+                style={{ marginTop: "auto", justifyContent: "center", width: "100%", borderColor: "#c5221f", color: "#c5221f" }}
               >
-                <Play size={16} color="#c5221f" /> Oglądaj na YouTube @DOMJOZEFATV <ExternalLink size={14} />
+                <Play size={16} color="#c5221f" /> Oglądaj kanał Dom Józefa TV na YouTube <ExternalLink size={14} />
               </a>
             </div>
           </MotionReveal>
