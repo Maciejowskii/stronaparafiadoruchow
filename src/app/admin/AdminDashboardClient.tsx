@@ -371,10 +371,11 @@ export default function AdminDashboardClient({
         const newUrls: string[] = data.urls || [data.url];
         setPhotosList((prev) => [...newUrls, ...prev]);
 
-        // If uploading within blog form, auto add to current blog gallery
+        // If uploading within blog form, auto add to current blog gallery and auto-set as cover if needed
         if (blogForm) {
           setBlogForm((prev) => ({
             ...prev,
+            coverImage: prev.coverImage && prev.coverImage !== "/zdjecia/oltarz.jpg" ? prev.coverImage : (newUrls[0] || prev.coverImage),
             galleryImages: [...prev.galleryImages, ...newUrls],
           }));
         }
@@ -458,36 +459,23 @@ export default function AdminDashboardClient({
           </div>
 
           <div className="admin-header-actions" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <button
-              onClick={handleResetToCleanState}
-              title="Usuwa wszystkie próbne ogłoszenia i wydarzenia"
-              style={{
-                color: "#ffc107",
-                fontSize: "12px",
-                padding: "6px 10px",
-                border: "1px solid rgba(255,193,7,0.4)",
-                background: "rgba(255,193,7,0.08)",
-                borderRadius: "6px",
-                cursor: "pointer",
-              }}
-            >
-              Wyczyść próbne dane
-            </button>
             <Link
               href="/"
-              target="_blank"
               style={{
                 color: "#fff",
                 fontSize: "13px",
-                padding: "6px 12px",
+                padding: "6px 14px",
                 border: "1px solid rgba(255,255,255,0.4)",
+                background: "rgba(255,255,255,0.08)",
                 borderRadius: "6px",
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "6px",
+                textDecoration: "none",
+                fontWeight: 500,
               }}
             >
-              Podgląd strony <ExternalLink size={14} />
+              Powrót do strony <ExternalLink size={14} />
             </Link>
             <button
               onClick={handleLogout}
@@ -570,7 +558,7 @@ export default function AdminDashboardClient({
               gap: "8px",
             }}
           >
-            <Building2 size={16} /> Kancelaria & Alert Wakacyjny
+            <Building2 size={16} /> Zarządzanie kancelarią
           </button>
           <button
             onClick={() => setActiveTab("parafia")}
@@ -598,7 +586,7 @@ export default function AdminDashboardClient({
               gap: "8px",
             }}
           >
-            <ImageIcon size={16} /> Galeria Zdjęć ({photosList.length})
+            <ImageIcon size={16} /> Galeria zdjęć ({photosList.length})
           </button>
         </div>
 
@@ -832,30 +820,102 @@ export default function AdminDashboardClient({
                   />
                 </div>
 
-                <div className="field">
-                  <label htmlFor="blog-cover">Zdjęcie okładkowe (z folderu zdjecia)</label>
-                  <select
-                    id="blog-cover"
-                    value={blogForm.coverImage}
-                    onChange={(e) => setBlogForm({ ...blogForm, coverImage: e.target.value })}
-                  >
-                    {photosList.map((photo) => (
-                      <option key={photo} value={photo}>
-                        {photo}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div style={{ marginBottom: "20px" }}>
-                  <label style={{ display: "block", fontSize: "12px", color: "var(--ash)", marginBottom: "8px" }}>
-                    Podgląd wybranej okładki:
+                <div className="field" style={{ marginBottom: "24px" }}>
+                  <label style={{ display: "block", fontSize: "14px", fontWeight: 600, color: "var(--graphite)", marginBottom: "6px" }}>
+                    Zdjęcie okładkowe
                   </label>
-                  <img
-                    src={blogForm.coverImage}
-                    alt="Cover preview"
-                    style={{ height: "120px", borderRadius: "8px", objectFit: "cover" }}
-                  />
+                  <p style={{ margin: "0 0 10px", fontSize: "12px", color: "var(--ash)" }}>
+                    Wybierz zdjęcie główne klikając w wybraną miniaturę lub prześlij własne zdjęcie poniżej:
+                  </p>
+
+                  {/* Visual Cover Photo Picker Grid */}
+                  {photosList.length > 0 ? (
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(auto-fill, minmax(90px, 1fr))",
+                        gap: "8px",
+                        maxHeight: "180px",
+                        overflowY: "auto",
+                        padding: "8px",
+                        border: "1px solid var(--mist)",
+                        borderRadius: "8px",
+                        background: "#fff",
+                        marginBottom: "12px",
+                      }}
+                    >
+                      {photosList.map((photo) => {
+                        const isSelected = blogForm.coverImage === photo;
+                        return (
+                          <div
+                            key={photo}
+                            onClick={() => setBlogForm({ ...blogForm, coverImage: photo })}
+                            style={{
+                              position: "relative",
+                              height: "65px",
+                              borderRadius: "6px",
+                              overflow: "hidden",
+                              border: isSelected ? "3px solid var(--blue)" : "1px solid var(--mist)",
+                              cursor: "pointer",
+                              boxShadow: isSelected ? "0 0 0 2px rgba(65,161,207,0.3)" : "none",
+                              transition: "all 0.15s ease",
+                            }}
+                            title="Kliknij, aby wybrać jako okładkę"
+                          >
+                            <img
+                              src={photo}
+                              alt={photo}
+                              loading="lazy"
+                              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                            />
+                            {isSelected && (
+                              <span
+                                style={{
+                                  position: "absolute",
+                                  bottom: "2px",
+                                  left: "2px",
+                                  right: "2px",
+                                  background: "var(--blue)",
+                                  color: "#fff",
+                                  fontSize: "9px",
+                                  fontWeight: 700,
+                                  textAlign: "center",
+                                  padding: "1px 0",
+                                  borderRadius: "3px",
+                                  textTransform: "uppercase",
+                                }}
+                              >
+                                Okładka ✓
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <p style={{ fontSize: "13px", color: "var(--ash)", marginBottom: "12px" }}>
+                      Brak zdjęć w galerii. Prześlij pierwsze zdjęcie poniżej.
+                    </p>
+                  )}
+
+                  {/* Selected Cover Preview */}
+                  {blogForm.coverImage && (
+                    <div style={{ display: "flex", alignItems: "center", gap: "14px", background: "var(--linen)", padding: "10px 14px", borderRadius: "8px", border: "1px solid var(--mist)" }}>
+                      <img
+                        src={blogForm.coverImage}
+                        alt="Aktualna okładka"
+                        style={{ width: "110px", height: "70px", borderRadius: "6px", objectFit: "cover", border: "1px solid var(--mist)", flexShrink: 0 }}
+                      />
+                      <div>
+                        <span style={{ fontSize: "11px", fontWeight: 700, color: "var(--blue)", textTransform: "uppercase", display: "block", marginBottom: "2px" }}>
+                          Aktualnie wybrana okładka:
+                        </span>
+                        <span style={{ fontSize: "12px", color: "var(--charcoal)", wordBreak: "break-all" }}>
+                          {blogForm.coverImage}
+                        </span>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Batch Photo Upload for Blog Gallery */}
@@ -1446,7 +1506,7 @@ export default function AdminDashboardClient({
             </div>
 
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "24px", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
-              <h3 style={{ margin: 0 }}>Dostępne zdjęcia w parafii ({photosList.length})</h3>
+              <h3 style={{ margin: 0 }}>Galeria zdjęć ({photosList.length})</h3>
               {totalPhotosPages > 1 && (
                 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                   <span style={{ fontSize: "13px", color: "var(--ash)" }}>
