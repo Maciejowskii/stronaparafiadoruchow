@@ -16,6 +16,7 @@ export async function POST(req: Request) {
       name: COOKIE_NAME,
       value: token,
       httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
       path: "/",
       sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60, // 7 days

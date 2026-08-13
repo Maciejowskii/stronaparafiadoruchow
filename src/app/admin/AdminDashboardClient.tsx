@@ -164,6 +164,11 @@ export default function AdminDashboardClient({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(annForm),
       });
+      if (res.status === 401) {
+        notify("Sesja wygasła. Zaloguj się ponownie.");
+        router.push("/admin/login");
+        return;
+      }
       if (res.ok) {
         const updated = await res.json();
         setAnnouncementsList(announcementsList.map((a) => (a.id === updated.id ? updated : a)));
@@ -174,6 +179,10 @@ export default function AdminDashboardClient({
           content: "",
           isPublished: true,
         });
+        router.refresh();
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        notify(errData.error || "Błąd podczas zapisywania ogłoszenia");
       }
     } else {
       // Create
@@ -182,6 +191,11 @@ export default function AdminDashboardClient({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(annForm),
       });
+      if (res.status === 401) {
+        notify("Sesja wygasła. Zaloguj się ponownie.");
+        router.push("/admin/login");
+        return;
+      }
       if (res.ok) {
         const created = await res.json();
         setAnnouncementsList([created, ...announcementsList]);
@@ -192,6 +206,10 @@ export default function AdminDashboardClient({
           content: "",
           isPublished: true,
         });
+        router.refresh();
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        notify(errData.error || "Błąd podczas tworzenia ogłoszenia");
       }
     }
   };
@@ -200,9 +218,18 @@ export default function AdminDashboardClient({
   const handleDeleteAnnouncement = async (id: number) => {
     if (!confirm("Czy na pewno usunąć to ogłoszenie?")) return;
     const res = await fetch(`/api/admin/announcements/${id}`, { method: "DELETE" });
+    if (res.status === 401) {
+      notify("Sesja wygasła. Zaloguj się ponownie.");
+      router.push("/admin/login");
+      return;
+    }
     if (res.ok) {
       setAnnouncementsList(announcementsList.filter((a) => a.id !== id));
       notify("Usunięto ogłoszenie");
+      router.refresh();
+    } else {
+      const errData = await res.json().catch(() => ({}));
+      notify(errData.error || "Błąd podczas usuwania ogłoszenia");
     }
   };
 
@@ -224,6 +251,11 @@ export default function AdminDashboardClient({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+      if (res.status === 401) {
+        notify("Sesja wygasła. Zaloguj się ponownie.");
+        router.push("/admin/login");
+        return;
+      }
       if (res.ok) {
         const updated = await res.json();
         setBlogList(blogList.map((b) => (b.id === updated.id ? updated : b)));
@@ -238,6 +270,10 @@ export default function AdminDashboardClient({
           galleryImages: [],
           isPublished: true,
         });
+        router.refresh();
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        notify(errData.error || "Błąd podczas edycji wpisu");
       }
     } else {
       const res = await fetch("/api/admin/blog", {
@@ -245,6 +281,11 @@ export default function AdminDashboardClient({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+      if (res.status === 401) {
+        notify("Sesja wygasła. Zaloguj się ponownie.");
+        router.push("/admin/login");
+        return;
+      }
       if (res.ok) {
         const created = await res.json();
         setBlogList([created, ...blogList]);
@@ -259,6 +300,10 @@ export default function AdminDashboardClient({
           galleryImages: [],
           isPublished: true,
         });
+        router.refresh();
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        notify(errData.error || "Błąd podczas dodawania wpisu");
       }
     }
   };
@@ -267,9 +312,18 @@ export default function AdminDashboardClient({
   const handleDeleteBlogPost = async (id: number) => {
     if (!confirm("Czy na pewno usunąć ten wpis?")) return;
     const res = await fetch(`/api/admin/blog/${id}`, { method: "DELETE" });
+    if (res.status === 401) {
+      notify("Sesja wygasła. Zaloguj się ponownie.");
+      router.push("/admin/login");
+      return;
+    }
     if (res.ok) {
       setBlogList(blogList.filter((b) => b.id !== id));
       notify("Usunięto wpis z bloga");
+      router.refresh();
+    } else {
+      const errData = await res.json().catch(() => ({}));
+      notify(errData.error || "Błąd podczas usuwania wpisu");
     }
   };
 
@@ -280,11 +334,17 @@ export default function AdminDashboardClient({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(settingsData),
     });
+    if (res.status === 401) {
+      notify("Sesja wygasła. Zaloguj się ponownie.");
+      router.push("/admin/login");
+      return;
+    }
     if (res.ok) {
       notify(successMsg);
       router.refresh();
     } else {
-      notify("Wystąpił błąd podczas zapisywania");
+      const errData = await res.json().catch(() => ({}));
+      notify(errData.error || "Wystąpił błąd podczas zapisywania");
     }
   };
 
